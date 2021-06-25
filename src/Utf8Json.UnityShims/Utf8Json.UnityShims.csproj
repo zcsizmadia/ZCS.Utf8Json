@@ -24,7 +24,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
+        <PackageReference Include="System.Runtime.Serialization.Primitives" Version="$(SystemRuntimeSerializationPrimitives)" />
     </ItemGroup>
 
     <ItemGroup>
