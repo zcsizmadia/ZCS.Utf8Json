@@ -4,16 +4,22 @@
     <SystemCodeDomVersion>5.0.0</SystemCodeDomVersion>
     <SystemCollectionsImmutableVersion>5.0.0</SystemCollectionsImmutableVersion>
     <SystemReflectionEmitVersion>4.7.0</SystemReflectionEmitVersion>
-    <SystemRuntimeSerializationPrimitives>4.7.0</SystemRuntimeSerializationPrimitives>
+    <SystemRuntimeSerializationPrimitives>4.3.0</SystemRuntimeSerializationPrimitives>
     <SystemThreadingTasksExtensionsVersion>4.5.4</SystemThreadingTasksExtensionsVersion>
     <SystemValueTupleVersion>4.5.0</SystemValueTupleVersion>
 
-    <!-- Build, Test, Code Analysis -->
-    <MicrosoftCodeAnalysisCSharpWorkspacesVersion>3.10.0</MicrosoftCodeAnalysisCSharpWorkspacesVersion>
-    <MicrosoftNETTestSdkVersion>16.10.3</MicrosoftNETTestSdkVersion>
-    <XUnitVersion>2.4.1</XUnitVersion>
+    <!--
+      Build, Test, Code Analysis
+    -->
+    <!-- Note: v3.10.0+ causes: src\Utf8Json.UniversalCodeGenerator\CodeAnalysis\TypeCollector.cs(206,32,206,58): warning RS1024: Compare symbols correctly -->
+    <MicrosoftCodeAnalysisCSharpWorkspacesVersion>3.9.0</MicrosoftCodeAnalysisCSharpWorkspacesVersion>
+    <MicrosoftNETTestSdkVersion>16.10.0</MicrosoftNETTestSdkVersion>
+    <!-- Note: Cannot use 2.4.0+, unless https://github.com/xunit/xunit/issues/1771 is fixed -->
+    <XUnitVersion>2.2.0</XUnitVersion>
 
-    <!-- Benchmarking Package Versions -->
+    <!--
+      Benchmark
+    -->
     <BenchmarkDotNetVersion>0.13.0</BenchmarkDotNetVersion>
     <JilVersion>2.17.0</JilVersion>
     <Version></Version>
