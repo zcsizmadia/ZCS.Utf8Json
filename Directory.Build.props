@@ -3,4 +3,38 @@
   <!-- All projects will include the defined versions automatically -->
   <Import Project="Versions.props" />
 
+  <PropertyGroup Label="Versions">
+    <!-- Default version if not specified in dotnet command -->
+    <PackageVersion Condition="'$(PackageVersion)' == ''">1.4.0</PackageVersion>
+    
+    <!-- Parse out parts of the version -->
+    <MajorVersion Condition="'$(MajorVersion)' == ''">$(PackageVersion.Split('.')[0])</MajorVersion>
+    <MinorVersion Condition="'$(MinorVersion)' == ''">$(PackageVersion.Split('.')[1])</MinorVersion>
+    <Patch Condition="'$(Patch)' == ''">$(PackageVersion.Split('-')[0].Split('.')[2])</Patch>
+    <BuildNumber Condition="'$(BuildNumber)' == ''">0</BuildNumber>
+    
+    <VersionPrefix Condition="'$(VersionPrefix)' == ''">$(MajorVersion).$(MinorVersion).$(Patch)</VersionPrefix>
+    <VersionSuffix Condition="'$(VersionSuffix)' == '' AND $(PackageVersion.Contains('-'))">$(PackageVersion.Split('-')[1])</VersionSuffix>
+    <AssemblyVersion Condition="'$(AssemblyVersion)' == ''">$(VersionPrefix).$(BuildNumber)</AssemblyVersion>
+    <FileVersion Condition="'$(FileVersion)' == ''">$(VersionPrefix).$(BuildNumber)</FileVersion>
+  </PropertyGroup>
+
+  <!-- Common NuGet properties -->
+  <!-- Reference: https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#pack-target -->
+  <PropertyGroup>
+    <Authors>neuecc</Authors>
+    <Owners>neuecc</Owners>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>Json, Serialization, Formatter, Serializer, Unity, Xamarin</PackageTags>
+    <RepositoryUrl>https://github.com/Cryptisk/Utf8Json</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Cryptisk/Utf8Json</PackageProjectUrl>
+    <!-- <Copyright></Copyright> -->
+    <!-- <PackageIconUrl></PackageIconUrl> -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)\LICENSE" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
 </Project>
