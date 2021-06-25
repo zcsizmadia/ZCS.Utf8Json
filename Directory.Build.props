@@ -1,0 +1,6 @@
+<Project>
+
+  <!-- All projects will include the defined versions automatically -->
+  <Import Project="Versions.props" />
+
+</Project>
