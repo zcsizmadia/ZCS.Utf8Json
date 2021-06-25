@@ -38,7 +38,7 @@ namespace PerfBenchmark
         [Benchmark]
         public byte[] MessagePackCSharpContractless()
         {
-            return MessagePack.MessagePackSerializer.Serialize(objContractless, MessagePack.Resolvers.ContractlessStandardResolver.Instance);
+            return MessagePack.MessagePackSerializer.Serialize(objContractless, MessagePack.Resolvers.ContractlessStandardResolver.Options);
         }
 
         [Benchmark]
@@ -77,6 +77,12 @@ namespace PerfBenchmark
         {
             return utf8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(obj1));
         }
+
+        [Benchmark]
+        public byte[] SystemTextJson()
+        {
+            return utf8.GetBytes(System.Text.Json.JsonSerializer.Serialize(obj1));
+        }
     }
 
     [Config(typeof(BenchmarkConfig))]
@@ -113,7 +119,7 @@ namespace PerfBenchmark
         [Benchmark]
         public TargetClassContractless MessagePackCSharpContractless()
         {
-            return MessagePack.MessagePackSerializer.Deserialize<TargetClassContractless>(msgpack2, MessagePack.Resolvers.ContractlessStandardResolver.Instance);
+            return MessagePack.MessagePackSerializer.Deserialize<TargetClassContractless>(msgpack2, MessagePack.Resolvers.ContractlessStandardResolver.Options);
         }
 
         [Benchmark]
@@ -151,6 +157,12 @@ namespace PerfBenchmark
         public TargetClass NetJson()
         {
             return NetJSON.NetJSON.Deserialize<TargetClass>(utf8.GetString(json));
+        }
+
+        [Benchmark]
+        public TargetClass SystemTextJson()
+        {
+            return System.Text.Json.JsonSerializer.Deserialize<TargetClass>(utf8.GetString(json));
         }
     }
 }
