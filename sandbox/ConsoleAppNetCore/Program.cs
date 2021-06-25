@@ -323,11 +323,8 @@ namespace ConsoleAppNetCore
 
         public class E
         {
-            int x;
-
             public E()
             {
-                x = 9;
             }
         }
 
