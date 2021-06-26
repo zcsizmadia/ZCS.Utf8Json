@@ -6,6 +6,7 @@
         <Title>Cryptisk.Utf8Json AspNetCoreMvcFormatter</Title>
         <Description>Cryptisk.Utf8Json ASP.NET Core Mvc Input/Output Formatter.</Description>
         <PackageTags>$(PackageTags), ASPNET</PackageTags>
+        <IsPackable>true</IsPackable>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>opensource.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>

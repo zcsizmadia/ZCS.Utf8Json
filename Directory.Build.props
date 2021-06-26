@@ -31,6 +31,9 @@
     <PackageProjectUrl>https://github.com/Cryptisk/Utf8Json</PackageProjectUrl>
     <!-- <Copyright></Copyright> -->
     <!-- <PackageIconUrl></PackageIconUrl> -->
+
+    <!-- By default none of the projects are packable by "dotnet pack". Packable projects must set it to true! -->
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

@@ -5,6 +5,7 @@
         <PackageId>Cryptisk.Utf8Json.UnityShims</PackageId>
         <Title>Cryptisk.Utf8Json UnityShims</Title>
         <Description>Unity shims and formatters for Cryptisk.Utf8Json.</Description>
+        <IsPackable>true</IsPackable>
         <Configurations>Debug;Release</Configurations>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>opensource.snk</AssemblyOriginatorKeyFile>

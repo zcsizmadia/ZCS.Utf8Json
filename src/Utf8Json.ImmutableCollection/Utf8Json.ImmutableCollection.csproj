@@ -5,6 +5,7 @@
         <PackageId>Cryptisk.Utf8Json.ImmutableCollection</PackageId>
         <Title>Cryptisk.Utf8Json Extension Resolver for ImmutableCollection</Title>
         <Description>Add ImmutableCollection formatters to Cryptisk.Utf8Json.</Description>
+        <IsPackable>true</IsPackable>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>opensource.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
