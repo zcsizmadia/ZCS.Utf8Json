@@ -17,7 +17,7 @@ namespace Utf8Json.Tests
             return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value));
         }
 
-        public static object dictionaryTestData = new object[]
+        public static IEnumerable<object[]> dictionaryTestData = new List<object[]>
         {
             new object[]{ new Dictionary<int, int>() { { 1, 100 } }, null },
             new object[]{ new ReadOnlyDictionary<int,int>(new Dictionary<int, int>() { { 1, 100 } }), null },

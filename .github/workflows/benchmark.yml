@@ -22,6 +22,6 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.301
+        dotnet-version: 6.0.x
     - name: Benchmark
-      run: dotnet run --configuration Release -f net5.0 --filter '*' --runOncePerIteration
+      run: dotnet run --configuration Release -f net6.0 --filter '*' --runOncePerIteration
