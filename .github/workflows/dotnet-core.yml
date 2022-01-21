@@ -22,7 +22,7 @@ jobs:
     - name: Build
       run: dotnet build -c Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --logger "console;verbosity=normal"
     - name: Pack
       # Make sure pack works
       run: dotnet pack --no-build -c Release --include-symbols --include-source -p:PackageVersion=0.0.1
