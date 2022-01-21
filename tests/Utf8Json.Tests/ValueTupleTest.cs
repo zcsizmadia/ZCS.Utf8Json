@@ -12,7 +12,7 @@ namespace Utf8Json.Tests
             return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value));
         }
 
-        public static object valueTupleData = new object[]
+        public static IEnumerable<object[]> valueTupleData = new List<object[]>
         {
             new object[] { (1, 2) },
             new object[] { (1, 2, 3) },

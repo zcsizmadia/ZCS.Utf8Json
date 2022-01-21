@@ -2,9 +2,9 @@
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-        <PackageId>Cryptisk.Utf8Json.AspNetCoreMvcFormatter</PackageId>
-        <Title>Cryptisk.Utf8Json AspNetCoreMvcFormatter</Title>
-        <Description>Cryptisk.Utf8Json ASP.NET Core Mvc Input/Output Formatter.</Description>
+        <PackageId>ZCS.Utf8Json.AspNetCoreMvcFormatter</PackageId>
+        <Title>ZCS.Utf8Json AspNetCoreMvcFormatter</Title>
+        <Description>ZCS.Utf8Json ASP.NET Core Mvc Input/Output Formatter.</Description>
         <PackageTags>$(PackageTags), ASPNET</PackageTags>
         <IsPackable>true</IsPackable>
         <SignAssembly>true</SignAssembly>

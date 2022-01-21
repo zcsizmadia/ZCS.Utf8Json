@@ -12,7 +12,7 @@ namespace Utf8Json.Tests
             return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value));
         }
 
-        public static object[] tupleTestData = new object[]
+        public static IEnumerable<object[]> tupleTestData = new List<object[]>
         {
             new object[] { Tuple.Create(1) },
             new object[] { Tuple.Create(1,2) },
@@ -31,7 +31,7 @@ namespace Utf8Json.Tests
             Convert(data).IsStructuralEqual(data);
         }
 
-        public static object[] valueTupleTestData = new object[]
+        public static IEnumerable<object[]> valueTupleTestData = new List<object[]>
         {
             new object[] { ValueTuple.Create(1),null },
             new object[] { ValueTuple.Create(1,2),null },
@@ -45,14 +45,14 @@ namespace Utf8Json.Tests
 
         [Theory]
         [MemberData(nameof(valueTupleTestData))]
-        public void TupleTest<T>(T data, T? @nullData)
+        public void ValTupleTest<T>(T data, T? @nullData)
             where T : struct
         {
             Convert(data).IsStructuralEqual(data);
             Convert(@nullData).IsNull();
         }
 
-        public static object[] keyValuePairData = new object[]
+        public static IEnumerable<object[]> keyValuePairData = new List<object[]>
         {
             new object[] { new KeyValuePair<int, int>(1,2), null },
             new object[] { new KeyValuePair<int, int>(3,4), new KeyValuePair<int, int>(5,6) },
@@ -67,19 +67,18 @@ namespace Utf8Json.Tests
             Convert(t2).IsStructuralEqual(t2);
         }
 
-        public static object[] byteArraySegementData = new object[]
+        public static IEnumerable<object[]> byteArraySegmentData = new List<object[]>
         {
-            new object[] { new ArraySegment<byte>(new byte[] { 0, 0, 1, 2, 3 }, 2, 3), null, new byte[] { 1, 2, 3 }  },
-            new object[] { new ArraySegment<byte>(new byte[0], 0, 0), null, new byte[0] },
+            new object[] { new ArraySegment<byte>(new byte[] { 0, 0, 1, 2, 3 }, 2, 3), new byte[] { 1, 2, 3 }  },
+            new object[] { new ArraySegment<byte>(new byte[0], 0, 0), new byte[0] },
         };
 
         [Theory]
-        [MemberData(nameof(byteArraySegementData))]
-        public void ByteArraySegmentTest(ArraySegment<byte> t, ArraySegment<byte>? t2, byte[] reference)
+        [MemberData(nameof(byteArraySegmentData))]
+        public void ByteArraySegmentTest(ArraySegment<byte> t, byte[] reference)
         {
             JsonSerializer.Serialize(t).Is(JsonSerializer.Serialize(reference));
             Convert(t).Array.Is(reference);
-            // MessagePackBinary.IsNil(JsonSerializer.Serialize(t2), 0).IsTrue();
         }
 
 

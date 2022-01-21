@@ -27,8 +27,8 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Json, Serialization, Formatter, Serializer, Unity, Xamarin</PackageTags>
-    <RepositoryUrl>https://github.com/Cryptisk/Utf8Json</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/Cryptisk/Utf8Json</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/zcsizmadia/ZCS.Utf8Json</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/zcsizmadia/ZCS.Utf8Json</PackageProjectUrl>
     <!-- <Copyright></Copyright> -->
     <!-- <PackageIconUrl></PackageIconUrl> -->
 

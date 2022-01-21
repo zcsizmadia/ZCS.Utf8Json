@@ -137,7 +137,7 @@ namespace Xunit
         {
             if (expected == null)
             {
-                Assert.Null(actual);
+                Assert.True(actual == null);
                 return;
             }
 
@@ -255,13 +255,15 @@ namespace Xunit
         /// <summary>Assert.Null</summary>
         public static void IsNull<T>(this T value)
         {
-            Assert.Null(value);
+            //Assert.Null(value);
+            Assert.True(value == null);
         }
 
         /// <summary>Assert.NotNull</summary>
         public static void IsNotNull<T>(this T value)
         {
-            Assert.NotNull(value);
+            //Assert.NotNull(value);
+            Assert.False(value == null);
         }
 
         /// <summary>Is(true)</summary>
@@ -279,13 +281,13 @@ namespace Xunit
         /// <summary>Assert.Same</summary>
         public static void IsSameReferenceAs<T>(this T actual, T expected)
         {
-            Assert.Same(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
         /// <summary>Assert.NotSame</summary>
         public static void IsNotSameReferenceAs<T>(this T actual, T notExpected)
         {
-            Assert.NotSame(notExpected, actual);
+            Assert.NotEqual(notExpected, actual);
         }
 
         /// <summary>Assert.IsType</summary>

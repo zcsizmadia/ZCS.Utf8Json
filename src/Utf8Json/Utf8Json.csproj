@@ -15,8 +15,8 @@
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <LangVersion>8</LangVersion>
-        <PackageId>Cryptisk.Utf8Json</PackageId>
-        <Title>Cryptisk.Utf8Json</Title>
+        <PackageId>ZCS.Utf8Json</PackageId>
+        <Title>ZCS.Utf8Json</Title>
         <Description>Definitely Fastest and Zero Allocation JSON Serializer for C#(NET, .NET Core, Unity, Xamarin).</Description>
         <IsPackable>true</IsPackable>
         <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
