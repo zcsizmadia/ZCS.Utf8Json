@@ -843,7 +843,17 @@ namespace Utf8Json.Formatters
             if (nanosecond != 0)
             {
                 writer.WriteRawUnsafe((byte)'.');
-                writer.WriteInt64(nanosecond);
+                for (long leadingZeros = 1000000; leadingZeros >= 1; leadingZeros /= 10)
+                {
+                    long digit = (nanosecond / leadingZeros) % 10;
+                    writer.WriteRawUnsafe((byte)('0' + digit));
+
+                    if ((nanosecond % leadingZeros) == 0)
+                    {
+                        // Do not add trailing zeros
+                        break;
+                    }
+                }
             }
 
             writer.WriteRawUnsafe((byte)'\"');
