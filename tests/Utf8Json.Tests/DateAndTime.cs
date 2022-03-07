@@ -142,6 +142,36 @@ namespace Utf8Json.Tests
             deserialized.StatusDate.Is(new DateTimeOffset(1970, 1, 1, 9, 15, 10, TimeSpan.Zero));
         }
 
+        [Theory]
+        [InlineData(0000001)]
+        [InlineData(0000012)]
+        [InlineData(0000123)]
+        [InlineData(0001234)]
+        [InlineData(0012345)]
+        [InlineData(0123456)]
+        [InlineData(1234567)]
+        [InlineData(1234560)]
+        [InlineData(1234500)]
+        [InlineData(1234000)]
+        [InlineData(1230000)]
+        [InlineData(1200000)]
+        [InlineData(1000000)]
+        [InlineData(0200000)]
+        [InlineData(0230000)]
+        [InlineData(0230500)]
+        [InlineData(0230560)]
+        [InlineData(0030000)]
+        [InlineData(0034000)]
+        [InlineData(0034060)]
+        [InlineData(0004560)]
+        [InlineData(0000560)]
+        [InlineData(0000060)]
+        public void TimeSpanNanoseconds(long nanoseconds)
+        {
+            var timeSpan = new TimeSpan(nanoseconds);
+            Assert.Equal(timeSpan, JsonSerializer.Deserialize<TimeSpan>(JsonSerializer.ToJsonString(timeSpan)));
+        }
+
         public class Test
         {
             public bool Flag { get; set; }
