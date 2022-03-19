@@ -407,8 +407,8 @@ namespace Utf8Json
                     break;
                 case JsonToken.Number:
                     {
-                        var v = reader.ReadDouble();
-                        writer.WriteDouble(v);
+                        var v = reader.ReadNextBlockSegment();
+                        writer.WriteRaw(v.ToArray());
                     }
                     break;
                 case JsonToken.String:
