@@ -115,5 +115,22 @@ namespace Utf8Json.Tests
                 GetString(item).Contains("E").IsTrue();
             }
         }
+
+        [Theory]
+        [InlineData("en-US")]
+        [InlineData("de-DE")]
+        public void CheckStringFormatProvider(string name)
+        {
+            // cause this number has more digits than kMaxExactDoubleIntegerDecimalDigits ComputeGuess will fail and the fallback will process this float-point value
+            {
+                System.Globalization.CultureInfo.DefaultThreadCurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture(name);
+                var dStr = "59.08634249999999";
+                var d = double.Parse(dStr, System.Globalization.CultureInfo.InvariantCulture);
+                var buf = Encoding.UTF8.GetBytes(dStr);
+                var d2 = NumberConverter.ReadDouble(buf, 0, out var _);
+
+                d2.Is(d);
+            }
+        }
     }
 }
