@@ -201,5 +201,30 @@ namespace Utf8Json.Tests
             var relative = new Uri("/me/", UriKind.Relative);
             Convert(relative).ToString().Is("/me/");
         }
+
+        [Fact]
+        public void ByteArrayAsListTest()
+        {
+            Resolvers.CompositeResolver.RegisterAndSetAsDefault
+            (
+            new IJsonFormatter[]
+            {
+                Formatters.ByteArrayAsListFormatter.Default,
+            },
+
+            new IJsonFormatterResolver[]
+            {
+                Resolvers.StandardResolver.Default,
+            });
+
+            var bytes = new byte[] { 123, 10 };
+            var c = Convert(bytes);
+
+            c[0].Is((byte)123);
+            c[1].Is((byte)10);
+
+            var json = JsonSerializer.ToJsonString(bytes);
+            json.Is("[123,10]");
+        }
     }
 }
