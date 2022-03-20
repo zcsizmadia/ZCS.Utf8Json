@@ -21,8 +21,10 @@ namespace Utf8Json.Internal.Emit
         {
             var ti = type.GetTypeInfo();
             var isClass = ti.IsClass || ti.IsInterface || ti.IsAbstract;
+            var isClassRecord = ti.IsClass && ti.GetMethod("<Clone>$", BindingFlags.Public | BindingFlags.Instance) is object;
 
             this.Type = type;
+
             var stringMembers = new Dictionary<string, MetaMember>();
 
             {
@@ -30,6 +32,7 @@ namespace Utf8Json.Internal.Emit
                 {
                     if (item.GetIndexParameters().Length > 0) continue; // skip indexer
                     if (item.GetCustomAttribute<IgnoreDataMemberAttribute>(true) != null) continue;
+                    if (isClassRecord && !HasBackingField(item)) continue;
 
                     var dm = item.GetCustomAttribute<DataMemberAttribute>(true);
                     var name = (dm != null && dm.Name != null) ? dm.Name : nameMutetor(item.Name);
@@ -135,6 +138,26 @@ namespace Utf8Json.Internal.Emit
             this.BestmatchConstructor = ctor;
             this.ConstructorParameters = constructorParameters.ToArray();
             this.Members = stringMembers.Values.ToArray();
+        }
+
+        static bool IsAnonymous(TypeInfo type)
+        {
+            return type.Namespace == null
+                   && type.IsSealed
+                   && (type.Name.StartsWith("<>f__AnonymousType", StringComparison.Ordinal)
+                       || type.Name.StartsWith("<>__AnonType", StringComparison.Ordinal)
+                       || type.Name.StartsWith("VB$AnonymousType_", StringComparison.Ordinal))
+                   && type.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false);
+        }
+
+        static bool HasBackingField(PropertyInfo property)
+        {
+            if (property.GetSetMethod(true) != null) return true;
+
+            var autoPropertyBackingField = property.DeclaringType.GetField($"<{property.Name}>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance);
+            var functionBodiedBackingField = property.DeclaringType.GetField($"<{property.Name}>i__Field", BindingFlags.NonPublic | BindingFlags.Instance);
+            
+            return autoPropertyBackingField != null || functionBodiedBackingField != null;
         }
 
         static bool TryGetNextConstructor(IEnumerator<ConstructorInfo> ctorEnumerator, ref ConstructorInfo ctor)
