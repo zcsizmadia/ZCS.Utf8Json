@@ -13,7 +13,9 @@ namespace Utf8Json.Tests
 
     public class RecordTest
     {
-        static T Convert<T>(T value) => JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value));
+        static T Convert<T>(T value) => JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value, resolver), resolver);
+
+        static readonly IJsonFormatterResolver resolver = CompositeResolver.Create(StandardResolver.AllowPrivateCamelCase);
 
         [Fact]
         public void Serialize()
@@ -21,10 +23,8 @@ namespace Utf8Json.Tests
             var a = new ClassRecord(10, "abc");
             var b = new StructRecord(10, "abc");
 
-            JsonSerializer.SetDefaultResolver(StandardResolver.AllowPrivateCamelCase);
-
-            var json_a = JsonSerializer.ToJsonString(a);
-            var json_b = JsonSerializer.ToJsonString(b);
+            var json_a = JsonSerializer.ToJsonString(a, resolver);
+            var json_b = JsonSerializer.ToJsonString(b, resolver);
 
             json_a.Is(json_b);
             json_a.Is(@"{""int"":10,""str"":""abc""}");
@@ -35,8 +35,6 @@ namespace Utf8Json.Tests
         {
             var a = new ClassRecord(10, "abc");
             var b = new StructRecord(10, "abc");
-
-            JsonSerializer.SetDefaultResolver(StandardResolver.AllowPrivateCamelCase);
 
             var convert_a = Convert(a);
             var convert_b = Convert(b);

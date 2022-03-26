@@ -205,7 +205,7 @@ namespace Utf8Json.Tests
         [Fact]
         public void ByteArrayAsListTest()
         {
-            Resolvers.CompositeResolver.RegisterAndSetAsDefault
+            var resolver = Resolvers.CompositeResolver.Create
             (
             new IJsonFormatter[]
             {
@@ -218,12 +218,14 @@ namespace Utf8Json.Tests
             });
 
             var bytes = new byte[] { 123, 10 };
-            var c = Convert(bytes);
+
+            var b = JsonSerializer.Serialize(bytes, resolver);
+            var c = JsonSerializer.Deserialize<byte[]>(b, resolver);
 
             c[0].Is((byte)123);
             c[1].Is((byte)10);
 
-            var json = JsonSerializer.ToJsonString(bytes);
+            var json = JsonSerializer.ToJsonString(bytes, resolver);
             json.Is("[123,10]");
         }
 
