@@ -24,15 +24,15 @@ namespace Utf8Json.Tests
             printed.Is(expected);
         }
 
-        [Fact]
-        public void Long()
+        [Theory]
+        [InlineData(long.MinValue, "-9223372036854775808")]
+        [InlineData(long.MaxValue, "9223372036854775807")]
+        public void Long(long value, string expected)
         {
-            var value = long.MinValue;
-
             var bytes = JsonSerializer.Serialize(value);
             var printed = JsonSerializer.PrettyPrint(bytes);
 
-            printed.Is("-9223372036854775808");
+            printed.Is(expected);
         }
 
         [Fact]

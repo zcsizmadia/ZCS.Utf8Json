@@ -17,7 +17,9 @@ namespace Utf8Json.Tests
         }
         public static bool Approximately(double a, double b)
         {
-            return Math.Abs(b - a) < Math.Max(1E-06 * Math.Max(Math.Abs(a), Math.Abs(b)), double.Epsilon * 8.0);
+            if (a is double.PositiveInfinity or double.NegativeInfinity) return a == b;
+            else if (a is double.NaN) return (a is double.NaN) && (b is double.NaN);
+            else return Math.Abs(b - a) < Math.Max(1E-06 * Math.Max(Math.Abs(a), Math.Abs(b)), double.Epsilon * 8.0);
         }
 
         static string GetString(double v)
@@ -125,17 +127,27 @@ namespace Utf8Json.Tests
             }
         }
 
+        public static IEnumerable<object[]> CheckStringFormatProviderData()
+        {
+            foreach (string cultureName in new string[] { "en-US", "de-DE" })
+            {
+                foreach (string dStr in new string[] { "59.08634249999999", "-59.08634249999999", "1.7976931348623157E+308", "-1.7976931348623157E+308", "NaN", "Infinity", "-Infinity" })
+                {
+                    yield return new object[] { cultureName, dStr };
+                }
+            }
+        }
+
         [Theory]
-        [InlineData("en-US")]
-        [InlineData("de-DE")]
-        public void CheckStringFormatProvider(string cultureName)
+        [MemberData(nameof(CheckStringFormatProviderData))]
+        public void CheckStringFormatProvider(string cultureName, string dStr)
         {
             // cause this number has more digits than kMaxExactDoubleIntegerDecimalDigits ComputeGuess will fail and the fallback will process this float-point value
             {
                 CurrentCulture = CreateSpecificCulture(cultureName);
-                var dStr = "59.08634249999999";
+
                 var d = double.Parse(dStr, InvariantCulture);
-                var buf = Encoding.UTF8.GetBytes(dStr);
+                var buf = Encoding.UTF8.GetBytes(d.ToString(InvariantCulture));
                 var d2 = NumberConverter.ReadDouble(buf, 0, out var _);
 
                 Approximately(d, d2).IsTrue();
