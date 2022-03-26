@@ -5,6 +5,7 @@ using System.Text;
 using Utf8Json.Internal.DoubleConversion;
 using Xunit;
 using Utf8Json.Internal;
+using static System.Globalization.CultureInfo;
 
 namespace Utf8Json.Tests
 {
@@ -33,9 +34,13 @@ namespace Utf8Json.Tests
             return Encoding.UTF8.GetString(buf, 0, len);
         }
 
-        [Fact]
-        public void Double()
+        [Theory]
+        [InlineData("en-US")]
+        [InlineData("de-DE")]
+        public void Double(string cultureName)
         {
+            CurrentCulture = CreateSpecificCulture(cultureName);
+
             // testdatagen, https://github.com/ufcpp/UfcppSample/blob/master/Demo/2017/TypeRepositoryBenchmarks/Grisu3DoubleConversion/TestData.cs
 
             var r = new Random();
@@ -51,13 +56,13 @@ namespace Utf8Json.Tests
             foreach (var item in x.Concat(new[] { double.Epsilon, double.MaxValue, double.MinValue }))
             {
                 var actual = GetString(item);
-                var y = double.Parse(actual);
+                var y = double.Parse(actual, InvariantCulture);
                 var diff = Math.Abs((item - y) / item);
                 if (diff > 1E-15) throw new Exception(item + "      :   " + diff.ToString());
 
                 if (!(item == double.MaxValue || item == double.MinValue))
                 {
-                    var buf = Encoding.UTF8.GetBytes(item.ToString());
+                    var buf = Encoding.UTF8.GetBytes(item.ToString(InvariantCulture));
                     var buf2 = Enumerable.Range(1, 100).Select(z => (byte)z).Concat(buf).ToArray();
                     var d2 = NumberConverter.ReadDouble(buf2, 100, out var _);
                     Approximately(y, d2).IsTrue();
@@ -77,9 +82,13 @@ namespace Utf8Json.Tests
             }
         }
 
-        [Fact]
-        public void Float()
+        [Theory]
+        [InlineData("en-US")]
+        [InlineData("de-DE")]
+        public void Float(string cultureName)
         {
+            CurrentCulture = CreateSpecificCulture(cultureName);
+
             var r = new Random();
             var n = 10000;
 
@@ -93,11 +102,11 @@ namespace Utf8Json.Tests
             foreach (var item in y.Concat(new[] { float.Epsilon, float.MaxValue, float.MinValue }))
             {
                 var actual = GetString(item);
-                var y2 = float.Parse(actual);
+                var y2 = float.Parse(actual, InvariantCulture);
                 var diff = Math.Abs((item - y2) / item);
                 if (diff > 2E-7) throw new Exception(item + "      :   " + diff.ToString());
 
-                var buf = Encoding.UTF8.GetBytes(item.ToString());
+                var buf = Encoding.UTF8.GetBytes(item.ToString(InvariantCulture));
                 var buf2 = Enumerable.Range(1, 100).Select(z => (byte)z).Concat(buf).ToArray();
                 var d2 = NumberConverter.ReadSingle(buf2, 100, out var _);
                 Approximately(y2, d2).IsTrue();
@@ -119,17 +128,17 @@ namespace Utf8Json.Tests
         [Theory]
         [InlineData("en-US")]
         [InlineData("de-DE")]
-        public void CheckStringFormatProvider(string name)
+        public void CheckStringFormatProvider(string cultureName)
         {
             // cause this number has more digits than kMaxExactDoubleIntegerDecimalDigits ComputeGuess will fail and the fallback will process this float-point value
             {
-                System.Globalization.CultureInfo.DefaultThreadCurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture(name);
+                CurrentCulture = CreateSpecificCulture(cultureName);
                 var dStr = "59.08634249999999";
-                var d = double.Parse(dStr, System.Globalization.CultureInfo.InvariantCulture);
+                var d = double.Parse(dStr, InvariantCulture);
                 var buf = Encoding.UTF8.GetBytes(dStr);
                 var d2 = NumberConverter.ReadDouble(buf, 0, out var _);
 
-                d2.Is(d);
+                Approximately(d, d2).IsTrue();
             }
         }
     }

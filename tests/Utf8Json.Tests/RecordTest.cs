@@ -8,36 +8,35 @@ using Xunit;
 
 namespace Utf8Json.Tests
 {
+    public record ClassRecord(int Int, string Str);
+    public record struct StructRecord(int Int, string Str);
+
     public class RecordTest
     {
-        T Convert<T>(T value) => JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value));
-
-        record classRecord(int i, string s);
-        record struct structRecord(int i, string s);
+        static T Convert<T>(T value) => JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(value));
 
         [Fact]
         public void Serialize()
         {
-            var a = new classRecord(10, "abc");
-            var b = new structRecord(10, "abc");
+            var a = new ClassRecord(10, "abc");
+            var b = new StructRecord(10, "abc");
 
-            JsonSerializer.SetDefaultResolver(StandardResolver.AllowPrivate);
+            JsonSerializer.SetDefaultResolver(StandardResolver.AllowPrivateCamelCase);
 
             var json_a = JsonSerializer.ToJsonString(a);
             var json_b = JsonSerializer.ToJsonString(b);
 
             json_a.Is(json_b);
-            json_a.Is(@"{""i"":10,""s"":""abc""}");
+            json_a.Is(@"{""int"":10,""str"":""abc""}");
         }
-
 
         [Fact]
         public void Deserialize()
         {
-            var a = new classRecord(10, "abc");
-            var b = new structRecord(10, "abc");
+            var a = new ClassRecord(10, "abc");
+            var b = new StructRecord(10, "abc");
 
-            JsonSerializer.SetDefaultResolver(StandardResolver.AllowPrivate);
+            JsonSerializer.SetDefaultResolver(StandardResolver.AllowPrivateCamelCase);
 
             var convert_a = Convert(a);
             var convert_b = Convert(b);
