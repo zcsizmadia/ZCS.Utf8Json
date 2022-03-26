@@ -226,5 +226,25 @@ namespace Utf8Json.Tests
             var json = JsonSerializer.ToJsonString(bytes);
             json.Is("[123,10]");
         }
+
+        [Theory]
+        [InlineData("en-US")]
+        [InlineData("de-DE")]
+        public void NonStandardFloatTest(string cultureName)
+        {
+            CultureInfo.CurrentCulture = CultureInfo.CreateSpecificCulture(cultureName);
+
+            var invalidDoubles = new[] { double.NaN, double.NegativeInfinity, double.PositiveInfinity, };
+            var invalidFloats = new[] { float.NaN, float.NegativeInfinity, float.PositiveInfinity, };
+
+            var jsonDoubles = JsonSerializer.ToJsonString(invalidDoubles);
+            var jsonFloats = JsonSerializer.ToJsonString(invalidFloats);
+
+            jsonDoubles.Is(jsonFloats);
+            jsonDoubles.Is("[NaN,-Infinity,Infinity]");
+
+            Convert(invalidDoubles).Is(invalidDoubles);
+            Convert(invalidFloats).Is(invalidFloats);
+        }
     }
 }

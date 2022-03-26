@@ -72,7 +72,7 @@ namespace Utf8Json.Tests
             // same
             foreach (var item in new[] { double.NaN, double.NegativeInfinity, double.PositiveInfinity, 0.000, })
             {
-                GetString(item).Is(item.ToString());
+                GetString(item).Is(item.ToString(InvariantCulture));
             }
 
             // has e
@@ -115,7 +115,7 @@ namespace Utf8Json.Tests
             // same
             foreach (var item in new[] { float.NaN, float.NegativeInfinity, float.PositiveInfinity, 0.000f, })
             {
-                GetString(item).Is(item.ToString());
+                GetString(item).Is(item.ToString(InvariantCulture));
             }
 
             // has e

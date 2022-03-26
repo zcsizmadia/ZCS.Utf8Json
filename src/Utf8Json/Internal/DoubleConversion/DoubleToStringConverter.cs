@@ -172,8 +172,8 @@ namespace Utf8Json.Internal.DoubleConversion
         };
 
         // C# constants
-        static readonly byte[] infinity_symbol_ = StringEncoding.UTF8.GetBytes(double.PositiveInfinity.ToString());
-        static readonly byte[] nan_symbol_ = StringEncoding.UTF8.GetBytes(double.NaN.ToString());
+        static readonly byte[] infinity_symbol_ = StringEncoding.UTF8.GetBytes(double.PositiveInfinity.ToString(CultureInfo.InvariantCulture));
+        static readonly byte[] nan_symbol_ = StringEncoding.UTF8.GetBytes(double.NaN.ToString(CultureInfo.InvariantCulture));
 
         // constructor parameter, same as EcmaScriptConverter
         //DoubleToStringConverter(int flags,
