@@ -135,6 +135,8 @@ namespace Utf8Json
                     case (byte)'7': return JsonToken.Number;
                     case (byte)'8': return JsonToken.Number;
                     case (byte)'9': return JsonToken.Number;
+                    case (byte)'N': return JsonToken.Number; // NaN
+                    case (byte)'I': return JsonToken.Number; // Infinity
                     case (byte)'\"': return JsonToken.String;
                     case 0:
                     case 1:
@@ -195,12 +197,10 @@ namespace Utf8Json
                     case 70:
                     case 71:
                     case 72:
-                    case 73:
                     case 74:
                     case 75:
                     case 76:
                     case 77:
-                    case 78:
                     case 79:
                     case 80:
                     case 81:

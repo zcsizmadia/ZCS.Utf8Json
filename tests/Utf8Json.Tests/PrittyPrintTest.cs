@@ -10,15 +10,18 @@ namespace Utf8Json.Tests
     public class PrittyPrintTest
     {
 
-        [Fact]
-        public void Double()
+        [Theory]
+        [InlineData(double.MaxValue, "1.7976931348623157E+308")]
+        [InlineData(double.MinValue, "-1.7976931348623157E+308")]
+        [InlineData(double.NaN, "NaN")]
+        [InlineData(double.NegativeInfinity, "-Infinity")]
+        [InlineData(double.PositiveInfinity, "Infinity")]
+        public void Double(double value, string expected)
         {
-            var value = double.MaxValue;
-
             var bytes = JsonSerializer.Serialize(value);
             var printed = JsonSerializer.PrettyPrint(bytes);
 
-            printed.Is("1.7976931348623157E+308");
+            printed.Is(expected);
         }
 
         [Fact]
