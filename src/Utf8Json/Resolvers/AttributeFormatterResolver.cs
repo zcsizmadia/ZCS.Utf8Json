@@ -33,6 +33,7 @@ namespace Utf8Json.Resolvers
                 var ti = typeof(T).GetTypeInfo();
                 var genericTypeInfo = ti.GetTypeInfo();
                 var isNullable = genericTypeInfo.IsNullable();
+                var isStruct = genericTypeInfo.IsValueType && !genericTypeInfo.IsEnum;
                 var elementType = isNullable ? ti.GenericTypeArguments[0] : typeof(T);
 
 #if (UNITY_METRO || UNITY_WSA) && !NETFX_CORE
@@ -58,7 +59,7 @@ namespace Utf8Json.Resolvers
                         fmt = Activator.CreateInstance(attr.FormatterType, attr.Arguments);
                     }
 
-                    if (isNullable)
+                    if (isNullable && isStruct)
                     {
                         formatter = (IJsonFormatter<T>)Activator.CreateInstance(typeof(StaticNullableFormatter<>).MakeGenericType(elementType), fmt);
                     }
