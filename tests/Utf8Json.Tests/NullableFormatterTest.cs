@@ -1,5 +1,8 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
+using Utf8Json.Resolvers;
 using Xunit;
 
 namespace Utf8Json.Tests
