@@ -41,6 +41,6 @@ public class BenchmarkConfig : ManualConfig
         AddDiagnoser(diagnosers);
         AddExporter(exporters);
 
-        AddJob(Job.Default.WithRuntime(CoreRuntime.Core50).WithPlatform(Platform.X64));
+        AddJob(Job.Default.WithRuntime(CoreRuntime.Core70).WithPlatform(Platform.X64));
     }
 }
