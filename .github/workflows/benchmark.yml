@@ -19,9 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
     - name: Benchmark
-      run: dotnet run --configuration Release -f net6.0 --filter '*' --runOncePerIteration
+      run: dotnet run --configuration Release -f net7.0 --filter '*' --runOncePerIteration

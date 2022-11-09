@@ -6,42 +6,33 @@ on:
   pull_request:
     branches: [ master ]
   release:
-    types: [ published ]    
+    types: [ published ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: 6.0.x
-    - name: Install dependencies
-      run: dotnet restore
+        dotnet-version: 7.0.x
     - name: Build
-      run: dotnet build -c Release --no-restore
-    - name: Test
-      run: dotnet test --no-restore --logger "console;verbosity=normal"
-    - name: Pack
-      # Make sure pack works
-      run: dotnet pack --no-build -c Release --include-symbols --include-source -p:PackageVersion=0.0.1
+      run: dotnet build -c Release
 
-  deploy:
-    needs: build
-    if: github.event_name == 'release'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.0.x
-      - name: Create NuGet Package
-        run: |
-          vertag=(${GITHUB_REF//\// })
-          VERSION="${vertag[2]}"
-          VERSION="${VERSION//v}"
-          dotnet pack -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -o nupkg
-      - name: Push to NuGet.org
-        run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}
+    - name: Test
+      run: dotnet test --logger "console;verbosity=normal"
+
+    - name: Pack (non-release)
+      if: github.event_name != 'release'
+      run: dotnet pack -c Release
+
+    - name: Pack and push to nuget.org (release)
+      if: github.event_name == 'release'
+      run: |
+        vertag=(${GITHUB_REF//\// })
+        VERSION="${vertag[2]}"
+        [[ "${VERSION:0:1}" == "v" ]] && VERSION="${VERSION:1}"
+        [[ "$VERSION" =~ ^[1-9][0-9]*\.[0-9]+\.[0-9]+(-[a-z0-9]+\.[0-9]+|)$ ]] || (echo "Incorrect version! ($VERSION)"; exit 1)
+        dotnet pack -c Release -p:PackageVersion="$VERSION" -o nupkg
+        dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}

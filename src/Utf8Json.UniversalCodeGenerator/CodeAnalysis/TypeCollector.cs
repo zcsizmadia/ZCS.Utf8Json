@@ -203,7 +203,9 @@ namespace Utf8Json.UniversalCodeGenerator
 
         void ResetWorkspace()
         {
+            #pragma warning disable RS1024
             alreadyCollected = new HashSet<ITypeSymbol>();
+            #pragma warning restore RS1024
             collectedObjectInfo = new List<ObjectSerializationInfo>();
             collectedGenericInfo = new List<GenericSerializationInfo>();
         }
