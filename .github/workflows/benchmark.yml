@@ -20,9 +20,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: 7.0.x
-        include-prerelease: true
     - name: Benchmark
       run: dotnet run --configuration Release -f net7.0 --filter '*' --runOncePerIteration
