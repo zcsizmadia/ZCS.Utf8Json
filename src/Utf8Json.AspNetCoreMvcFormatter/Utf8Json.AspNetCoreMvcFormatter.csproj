@@ -12,7 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="$(MicrosoftAspNetCoreMvcAbstractionsVersion)" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" />
     </ItemGroup>
 
     <ItemGroup>

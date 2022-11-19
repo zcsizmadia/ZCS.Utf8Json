@@ -19,12 +19,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetVersion)" />
-    <PackageReference Include="Jil" Version="$(JilVersion)" />
-    <PackageReference Include="MessagePack" Version="$(MessagePackVersion)" />
-    <PackageReference Include="NetJSON" Version="$(NetJSONVersion)" />
-    <PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJsonVersion)" />
-    <PackageReference Include="protobuf-net" Version="$(ProtobufNetVersion)" />
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="Jil" />
+    <PackageReference Include="MessagePack" />
+    <PackageReference Include="NetJSON" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="protobuf-net" />
   </ItemGroup>
 
   <ItemGroup>
