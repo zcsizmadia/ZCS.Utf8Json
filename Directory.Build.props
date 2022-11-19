@@ -1,8 +1,5 @@
 <Project>
 
-  <!-- All projects will include the defined versions automatically -->
-  <Import Project="Versions.props" />
-
   <PropertyGroup Label="Versions">
     <!-- Default version if not specified in dotnet command -->
     <PackageVersion Condition="'$(PackageVersion)' == ''">0.1.0</PackageVersion>

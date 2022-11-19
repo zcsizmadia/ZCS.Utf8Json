@@ -34,10 +34,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Reflection.Emit" Version="$(SystemReflectionEmitVersion)" />
-        <PackageReference Include="System.Reflection.Emit.Lightweight" Version="$(SystemReflectionEmitVersion)" />
-        <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(SystemThreadingTasksExtensionsVersion)" />
-        <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />
+        <PackageReference Include="System.Reflection.Emit" />
+        <PackageReference Include="System.Reflection.Emit.Lightweight" />
+        <PackageReference Include="System.Threading.Tasks.Extensions" />
+        <PackageReference Include="System.ValueTuple" />
     </ItemGroup>
 
     <ItemGroup>
