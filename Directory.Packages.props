@@ -30,7 +30,7 @@
     <PackageVersion Include="Jil" Version="2.17.0" />
     <PackageVersion Include="MessagePack" Version="2.4.35" />
     <PackageVersion Include="NetJSON" Version="1.4.0" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageVersion Include="protobuf-net" Version="3.1.25" />
   </ItemGroup>
 </Project>
