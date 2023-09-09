@@ -19,6 +19,9 @@
     <VersionSuffix Condition="'$(VersionSuffix)' == '' AND $(PackageVersion.Contains('-'))">$(PackageVersion.Split('-')[1])</VersionSuffix>
     <AssemblyVersion Condition="'$(AssemblyVersion)' == ''">$(VersionPrefix).$(BuildNumber)</AssemblyVersion>
     <FileVersion Condition="'$(FileVersion)' == ''">$(VersionPrefix).$(BuildNumber)</FileVersion>
+
+    <!-- Disable "using a preview version of .NET" message -->
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
   <!-- Common NuGet properties -->
