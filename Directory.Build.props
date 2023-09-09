@@ -1,6 +1,11 @@
 <Project>
 
   <PropertyGroup Label="Versions">
+    <!-- Default target frameworks -->
+    <DefaultExeTargetFrameworks Condition="'$(DefaultExeTargetFrameworks)' == ''">net7.0</DefaultExeTargetFrameworks>
+    <DefaultLibraryTargetFrameworks Condition="'$(DefaultLibraryTargetFrameworks)' == ''">netstandard2.0;netstandard2.1</DefaultLibraryTargetFrameworks>
+    <DefaultTestTargetFrameworks Condition="'$(DefaultTestTargetFrameworks)' == ''">net6.0;net7.0;net8.0</DefaultTestTargetFrameworks>
+
     <!-- Default version if not specified in dotnet command -->
     <PackageVersion Condition="'$(PackageVersion)' == ''">0.1.0</PackageVersion>
     
@@ -14,6 +19,9 @@
     <VersionSuffix Condition="'$(VersionSuffix)' == '' AND $(PackageVersion.Contains('-'))">$(PackageVersion.Split('-')[1])</VersionSuffix>
     <AssemblyVersion Condition="'$(AssemblyVersion)' == ''">$(VersionPrefix).$(BuildNumber)</AssemblyVersion>
     <FileVersion Condition="'$(FileVersion)' == ''">$(VersionPrefix).$(BuildNumber)</FileVersion>
+
+    <!-- Disable "using a preview version of .NET" message -->
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
   <!-- Common NuGet properties -->

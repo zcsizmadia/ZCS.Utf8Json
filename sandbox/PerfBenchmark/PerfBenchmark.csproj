@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net7.0;</TargetFrameworks>
+    <TargetFrameworks>$(DefaultExeTargetFrameworks)</TargetFrameworks>
     <Configurations>Debug;Release;DumpAsm</Configurations>
   </PropertyGroup>
 
