@@ -20,12 +20,11 @@ jobs:
           6.0.x
           7.0.x
           8.0.x
-        include-prerelease: true
     - name: Build
       run: dotnet build -c Release
 
     - name: Test
-      run: dotnet test --logger "console;verbosity=normal"
+      run: dotnet test -c Release
 
     - name: Pack (non-release)
       if: github.event_name != 'release'
