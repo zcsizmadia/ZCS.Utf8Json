@@ -156,28 +156,35 @@ namespace Utf8Json.Tests
         }
 
         [Fact]
-        public void TaskTest()
+        public async Task TaskTest()
         {
             var intTask = Task.Run(() => 100);
-            Convert(intTask).Result.Is(100);
+            (await Convert(intTask)).Is(100);
 
             Task<int> nullTask = null;
             Convert(nullTask).IsNull();
 
             Task unitTask = Task.Run(() => 100);
-            Convert(unitTask).Status.Is(TaskStatus.RanToCompletion);
+            await Convert(unitTask);
+            unitTask.Status.Is(TaskStatus.RanToCompletion);
 
             Task nullUnitTask = null;
-            Convert(nullUnitTask).Status.Is(TaskStatus.RanToCompletion); // write to nil
+            var nullUnitTask2 = Convert(nullUnitTask);
+            await nullUnitTask2;
+            nullUnitTask2.Status.Is(TaskStatus.RanToCompletion); // write to nil
+        }
 
+        [Fact]
+        public async Task ValueTaskTest()
+        {
             ValueTask<int> valueTask = new ValueTask<int>(100);
-            Convert(valueTask).Result.Is(100);
+            (await Convert(valueTask)).Is(100);
 
-            ValueTask<int>? nullValueTask = new ValueTask<int>(100);
-            Convert(nullValueTask).Value.Result.Is(100);
+            ValueTask<int>? valueTask2 = new ValueTask<int>(100);
+            (await Convert(valueTask2).Value).Is(100);
 
-            ValueTask<int>? nullValueTask2 = null;
-            Convert(nullValueTask2).IsNull();
+            ValueTask<int>? nullValueTask = null;
+            Convert(nullValueTask).IsNull();
         }
 
         [Fact]
