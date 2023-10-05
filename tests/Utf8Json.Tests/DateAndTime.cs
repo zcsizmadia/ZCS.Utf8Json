@@ -61,7 +61,6 @@ namespace Utf8Json.Tests
             }
 
             {
-                Console.WriteLine("DateTimeOffset.UtcNow");
                 var dto = DateTimeOffset.UtcNow;
                 var serialized = Utf8Json.JsonSerializer.ToJsonString(dto);
                 var deSerialized = Utf8Json.JsonSerializer.Deserialize<DateTimeOffset>(serialized);
@@ -70,7 +69,6 @@ namespace Utf8Json.Tests
             }
 
             {
-                Console.WriteLine("DateTime.Now");
                 var dto = DateTime.Now;
                 var serialized = Utf8Json.JsonSerializer.ToJsonString(dto);
                 var deSerialized = Utf8Json.JsonSerializer.Deserialize<DateTime>(serialized);
@@ -80,7 +78,6 @@ namespace Utf8Json.Tests
 
 
             {
-                Console.WriteLine("DateTimeOffset.Now");
                 var dto = DateTimeOffset.Now;
                 var serialized = Utf8Json.JsonSerializer.ToJsonString(dto);
                 var deSerialized = Utf8Json.JsonSerializer.Deserialize<DateTimeOffset>(serialized);
