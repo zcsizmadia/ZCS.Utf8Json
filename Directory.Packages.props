@@ -26,7 +26,7 @@
     <!--
       Benchmark
     -->
-    <PackageVersion Include="BenchmarkDotNet" Version="0.13.9" />
+    <PackageVersion Include="BenchmarkDotNet" Version="0.13.10" />
     <PackageVersion Include="Jil" Version="2.17.0" />
     <PackageVersion Include="MessagePack" Version="2.5.129" />
     <PackageVersion Include="NetJSON" Version="1.4.3" />
