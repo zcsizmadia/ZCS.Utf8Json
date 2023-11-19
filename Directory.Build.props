@@ -30,6 +30,7 @@
     <Authors>neuecc</Authors>
     <Owners>neuecc</Owners>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Json, Serialization, Formatter, Serializer, Unity, Xamarin</PackageTags>
     <RepositoryUrl>https://github.com/zcsizmadia/ZCS.Utf8Json</RepositoryUrl>
@@ -42,7 +43,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)\LICENSE" Pack="true" Visible="false" PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)\LICENSE" Pack="true" PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)\README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
