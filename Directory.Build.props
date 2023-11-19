@@ -2,9 +2,9 @@
 
   <PropertyGroup Label="Versions">
     <!-- Default target frameworks -->
-    <DefaultExeTargetFrameworks Condition="'$(DefaultExeTargetFrameworks)' == ''">net7.0</DefaultExeTargetFrameworks>
+    <DefaultExeTargetFrameworks Condition="'$(DefaultExeTargetFrameworks)' == ''">net6.0;net7.0;net8.0</DefaultExeTargetFrameworks>
     <DefaultLibraryTargetFrameworks Condition="'$(DefaultLibraryTargetFrameworks)' == ''">netstandard2.0;netstandard2.1</DefaultLibraryTargetFrameworks>
-    <DefaultTestTargetFrameworks Condition="'$(DefaultTestTargetFrameworks)' == ''">net6.0;net7.0</DefaultTestTargetFrameworks>
+    <DefaultTestTargetFrameworks Condition="'$(DefaultTestTargetFrameworks)' == ''">net6.0;net7.0;net8.0</DefaultTestTargetFrameworks>
 
     <!-- Default version if not specified in dotnet command -->
     <PackageVersion Condition="'$(PackageVersion)' == ''">0.1.0</PackageVersion>
