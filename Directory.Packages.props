@@ -31,6 +31,6 @@
     <PackageVersion Include="MessagePack" Version="2.5.129" />
     <PackageVersion Include="NetJSON" Version="1.4.3" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageVersion Include="protobuf-net" Version="3.2.26" />
+    <PackageVersion Include="protobuf-net" Version="3.2.30" />
   </ItemGroup>
 </Project>
