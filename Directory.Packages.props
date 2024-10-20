@@ -28,7 +28,7 @@
     -->
     <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />
     <PackageVersion Include="Jil" Version="2.17.0" />
-    <PackageVersion Include="MessagePack" Version="2.5.172" />
+    <PackageVersion Include="MessagePack" Version="2.5.187" />
     <PackageVersion Include="NetJSON" Version="1.4.4" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="protobuf-net" Version="3.2.30" />
