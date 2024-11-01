@@ -1,4 +1,4 @@
-name: .NET Core
+name: .NET
 
 on:
   push:
@@ -23,15 +23,18 @@ jobs:
           9.0.x
         dotnet-quality: 'preview'
 
+    - name: Restore
+      run: dotnet restore
+
     - name: Build
-      run: dotnet build -c Release
+      run: dotnet build -c Release --no-restore
 
     - name: Test
       run: dotnet test -c Release --no-build
 
     - name: Pack (non-release)
       if: github.event_name != 'release'
-      run: dotnet pack -c Release
+      run: dotnet pack -c Release --no-restore
 
     - name: Pack and push to nuget.org (release)
       if: github.event_name == 'release'
@@ -40,5 +43,5 @@ jobs:
         VERSION="${vertag[2]}"
         [[ "${VERSION:0:1}" == "v" ]] && VERSION="${VERSION:1}"
         [[ "$VERSION" =~ ^[1-9][0-9]*\.[0-9]+\.[0-9]+(-[a-z0-9]+\.[0-9]+|)$ ]] || (echo "Incorrect version! ($VERSION)"; exit 1)
-        dotnet pack -c Release -p:PackageVersion="$VERSION" -o nupkg
+        dotnet pack -c Release --no-restore -p:PackageVersion="$VERSION" -o nupkg
         dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}
