@@ -7,17 +7,15 @@
 	
   <ItemGroup>
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
-    <PackageVersion Include="System.CodeDom" Condition="'$(TargetFramework)' == 'net9.0'" Version="9.0.0-rc.2.24473.5" />
-    <PackageVersion Include="System.CodeDom" Condition="'$(TargetFramework)' != 'net9.0'" Version="8.0.0" />
-    <PackageVersion Include="System.Collections.Immutable" Condition="'$(TargetFramework)' == 'net9.0'" Version="9.0.0-rc.2.24473.5" />
-    <PackageVersion Include="System.Collections.Immutable" Condition="'$(TargetFramework)' != 'net9.0'" Version="8.0.0" />
+    <PackageVersion Include="System.CodeDom" Version="8.0.0" />
+    <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
     <PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageVersion Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
     <PackageVersion Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageVersion Include="System.Private.Uri" Version="4.3.2" />
-    <PackageVersion Include="System.Text.Encodings.Web" Version="9.0.0-rc.2.24473.5" />
+    <PackageVersion Include="System.Text.Encodings.Web" Version="8.0.0" />
 
     <!--
       Build, Test, Code Analysis
