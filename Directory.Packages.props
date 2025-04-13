@@ -15,7 +15,7 @@
     <PackageVersion Include="System.ValueTuple" Version="4.6.1" />
     <PackageVersion Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageVersion Include="System.Private.Uri" Version="4.3.2" />
-    <PackageVersion Include="System.Text.Encodings.Web" Version="9.0.3" />
+    <PackageVersion Include="System.Text.Encodings.Web" Version="9.0.4" />
 
     <!--
       Build, Test, Code Analysis
