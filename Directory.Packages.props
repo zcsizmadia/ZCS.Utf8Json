@@ -7,15 +7,15 @@
 	
   <ItemGroup>
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0" />
-    <PackageVersion Include="System.CodeDom" Version="9.0.5" />
-    <PackageVersion Include="System.Collections.Immutable" Version="9.0.5" />
+    <PackageVersion Include="System.CodeDom" Version="9.0.6" />
+    <PackageVersion Include="System.Collections.Immutable" Version="9.0.6" />
     <PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageVersion Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
     <PackageVersion Include="System.ValueTuple" Version="4.6.1" />
     <PackageVersion Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageVersion Include="System.Private.Uri" Version="4.3.2" />
-    <PackageVersion Include="System.Text.Encodings.Web" Version="9.0.5" />
+    <PackageVersion Include="System.Text.Encodings.Web" Version="9.0.6" />
 
     <!--
       Build, Test, Code Analysis
@@ -28,9 +28,9 @@
     <!--
       Benchmark
     -->
-    <PackageVersion Include="BenchmarkDotNet" Version="0.15.0" />
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.1" />
     <PackageVersion Include="Jil" Version="2.17.0" />
-    <PackageVersion Include="MessagePack" Version="3.1.3" />
+    <PackageVersion Include="MessagePack" Version="3.1.4" />
     <PackageVersion Include="NetJSON" Version="1.4.4" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="protobuf-net" Version="3.2.52" />
