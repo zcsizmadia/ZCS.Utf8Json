@@ -19,6 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Collections.Immutable" />
     <ProjectReference Include="..\..\src\Utf8Json.ImmutableCollection\Utf8Json.ImmutableCollection.csproj" />
     <ProjectReference Include="..\..\src\Utf8Json\Utf8Json.csproj" />
   </ItemGroup>
