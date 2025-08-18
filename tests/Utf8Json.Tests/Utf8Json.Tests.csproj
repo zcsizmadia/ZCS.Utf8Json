@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Collections.Immutable" />
     <ProjectReference Include="..\..\src\Utf8Json\Utf8Json.csproj" />
   </ItemGroup>
 
