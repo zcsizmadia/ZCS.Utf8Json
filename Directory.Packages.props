@@ -13,7 +13,7 @@
     <PackageVersion Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
     <PackageVersion Include="System.ValueTuple" Version="4.6.1" />
-    <PackageVersion Include="System.Text.Encodings.Web" Version="10.0.1" />
+    <PackageVersion Include="System.Text.Encodings.Web" Version="10.0.2" />
 
     <!--
       Build, Test, Code Analysis
