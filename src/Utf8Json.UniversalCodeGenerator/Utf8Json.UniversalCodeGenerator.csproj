@@ -8,11 +8,10 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
-        <PackageReference Include="System.Runtime.Serialization.Primitives" />
-        <PackageReference Include="System.Private.Uri" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="System.Collections.Immutable" />
         <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     </ItemGroup>
 
