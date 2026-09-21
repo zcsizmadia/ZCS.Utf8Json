@@ -14,6 +14,8 @@ namespace Utf8Json.Resolvers
         public static readonly IJsonFormatterResolver SnakeCase = SnakeCaseStandardResolver.Instance;
         /// <summary>AllowPrivate:False, ExcludeNull:True,  NameMutate:Original</summary>
         public static readonly IJsonFormatterResolver ExcludeNull = ExcludeNullStandardResolver.Instance;
+        /// <summary>AllowPrivate:False, ExcludeNull:True,  NameMutate:Original</summary>
+        public static readonly IJsonFormatterResolver ExcludeNullExcludeDefault = ExcludeNullExcludeDefaultStandardResolver.Instance;
         /// <summary>AllowPrivate:False, ExcludeNull:True,  NameMutate:CamelCase</summary>
         public static readonly IJsonFormatterResolver ExcludeNullCamelCase = ExcludeNullCamelCaseStandardResolver.Instance;
         /// <summary>AllowPrivate:False, ExcludeNull:True,  NameMutate:SnakeCase</summary>
@@ -27,6 +29,8 @@ namespace Utf8Json.Resolvers
         public static readonly IJsonFormatterResolver AllowPrivateSnakeCase = AllowPrivateSnakeCaseStandardResolver.Instance;
         /// <summary>AllowPrivate:True,  ExcludeNull:True,  NameMutate:Original</summary>
         public static readonly IJsonFormatterResolver AllowPrivateExcludeNull = AllowPrivateExcludeNullStandardResolver.Instance;
+        /// <summary>AllowPrivate:True,  ExcludeNull:True, ExcludeDefault:True, NameMutate:Original</summary>
+        public static readonly IJsonFormatterResolver AllowPrivateExcludeNullExcludeDefault = AllowPrivateExcludeNullExcludeDefaultStandardResolver.Instance;
         /// <summary>AllowPrivate:True,  ExcludeNull:True,  NameMutate:CamelCase</summary>
         public static readonly IJsonFormatterResolver AllowPrivateExcludeNullCamelCase = AllowPrivateExcludeNullCamelCaseStandardResolver.Instance;
         /// <summary>AllowPrivate:True,  ExcludeNull:True,  NameMutate:SnakeCase</summary>
@@ -292,6 +296,74 @@ namespace Utf8Json.Resolvers.Internal
             public static readonly IJsonFormatterResolver Instance = new InnerResolver();
 
             static readonly IJsonFormatterResolver[] resolvers = StandardResolverHelper.CompositeResolverBase.Concat(new[] { DynamicObjectResolver.ExcludeNull }).ToArray();
+
+            InnerResolver()
+            {
+            }
+
+            public IJsonFormatter<T> GetFormatter<T>()
+            {
+                return FormatterCache<T>.formatter;
+            }
+
+            static class FormatterCache<T>
+            {
+                public static readonly IJsonFormatter<T> formatter;
+
+                static FormatterCache()
+                {
+                    foreach (var item in resolvers)
+                    {
+                        var f = item.GetFormatter<T>();
+                        if (f != null)
+                        {
+                            formatter = f;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    internal sealed class ExcludeNullExcludeDefaultStandardResolver : IJsonFormatterResolver
+    {
+        // configure
+        public static readonly IJsonFormatterResolver Instance = new ExcludeNullExcludeDefaultStandardResolver();
+
+        static readonly IJsonFormatter<object> fallbackFormatter = new DynamicObjectTypeFallbackFormatter(InnerResolver.Instance);
+
+        ExcludeNullExcludeDefaultStandardResolver()
+        {
+        }
+
+        public IJsonFormatter<T> GetFormatter<T>()
+        {
+            return FormatterCache<T>.formatter;
+        }
+
+        static class FormatterCache<T>
+        {
+            public static readonly IJsonFormatter<T> formatter;
+
+            static FormatterCache()
+            {
+                if (typeof(T) == typeof(object))
+                {
+                    formatter = (IJsonFormatter<T>)fallbackFormatter;
+                }
+                else
+                {
+                    formatter = InnerResolver.Instance.GetFormatter<T>();
+                }
+            }
+        }
+
+        sealed class InnerResolver : IJsonFormatterResolver
+        {
+            public static readonly IJsonFormatterResolver Instance = new InnerResolver();
+
+            static readonly IJsonFormatterResolver[] resolvers = StandardResolverHelper.CompositeResolverBase.Concat(new[] { DynamicObjectResolver.ExcludeNullExcludeDefault }).ToArray();
 
             InnerResolver()
             {
@@ -705,6 +777,75 @@ namespace Utf8Json.Resolvers.Internal
             public static readonly IJsonFormatterResolver Instance = new InnerResolver();
 
             static readonly IJsonFormatterResolver[] resolvers = StandardResolverHelper.CompositeResolverBase.Concat(new[] { DynamicObjectResolver.AllowPrivateExcludeNull }).ToArray();
+
+            InnerResolver()
+            {
+            }
+
+            public IJsonFormatter<T> GetFormatter<T>()
+            {
+                return FormatterCache<T>.formatter;
+            }
+
+            static class FormatterCache<T>
+            {
+                public static readonly IJsonFormatter<T> formatter;
+
+                static FormatterCache()
+                {
+                    foreach (var item in resolvers)
+                    {
+                        var f = item.GetFormatter<T>();
+                        if (f != null)
+                        {
+                            formatter = f;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    internal sealed class AllowPrivateExcludeNullExcludeDefaultStandardResolver : IJsonFormatterResolver
+    {
+        // configure
+        public static readonly IJsonFormatterResolver Instance = new AllowPrivateExcludeNullExcludeDefaultStandardResolver();
+
+
+        static readonly IJsonFormatter<object> fallbackFormatter = new DynamicObjectTypeFallbackFormatter(InnerResolver.Instance);
+
+        AllowPrivateExcludeNullExcludeDefaultStandardResolver()
+        {
+        }
+
+        public IJsonFormatter<T> GetFormatter<T>()
+        {
+            return FormatterCache<T>.formatter;
+        }
+
+        static class FormatterCache<T>
+        {
+            public static readonly IJsonFormatter<T> formatter;
+
+            static FormatterCache()
+            {
+                if (typeof(T) == typeof(object))
+                {
+                    formatter = (IJsonFormatter<T>)fallbackFormatter;
+                }
+                else
+                {
+                    formatter = InnerResolver.Instance.GetFormatter<T>();
+                }
+            }
+        }
+
+        sealed class InnerResolver : IJsonFormatterResolver
+        {
+            public static readonly IJsonFormatterResolver Instance = new InnerResolver();
+
+            static readonly IJsonFormatterResolver[] resolvers = StandardResolverHelper.CompositeResolverBase.Concat(new[] { DynamicObjectResolver.AllowPrivateExcludeNullExcludeDefault }).ToArray();
 
             InnerResolver()
             {
