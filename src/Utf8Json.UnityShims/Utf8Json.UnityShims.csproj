@@ -26,10 +26,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Runtime.Serialization.Primitives" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\Utf8Json\Utf8Json.csproj" />
     </ItemGroup>
 

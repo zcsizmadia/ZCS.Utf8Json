@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Reflection.Emit;
 using Utf8Json.Resolvers.Internal;
+using System.Runtime.CompilerServices;
 
 namespace Utf8Json.Resolvers
 {
@@ -1496,7 +1497,13 @@ namespace Utf8Json.Resolvers.Internal
             public static readonly MethodInfo GetCustomAttributeJsonFormatterAttribute = ExpressionUtility.GetMethodInfo(() => CustomAttributeExtensions.GetCustomAttribute<JsonFormatterAttribute>(default(MemberInfo), default(bool)));
 
             public static readonly MethodInfo ActivatorCreateInstance = ExpressionUtility.GetMethodInfo(() => Activator.CreateInstance(default(Type), default(object[])));
+#if !NETSTANDARD2_0
+            public static readonly MethodInfo GetUninitializedObject = ExpressionUtility.GetMethodInfo(() => RuntimeHelpers.GetUninitializedObject(default(Type)));
+#else
+#pragma warning disable SYSLIB0050 // Obsolete
             public static readonly MethodInfo GetUninitializedObject = ExpressionUtility.GetMethodInfo(() => System.Runtime.Serialization.FormatterServices.GetUninitializedObject(default(Type)));
+#pragma warning restore SYSLIB0050
+#endif
 
             public static readonly MethodInfo GetTypeMethod = ExpressionUtility.GetMethodInfo((object o) => o.GetType());
             public static readonly MethodInfo TypeEquals = ExpressionUtility.GetMethodInfo((Type t) => t.Equals(default(Type)));
