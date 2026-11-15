@@ -18,6 +18,7 @@ namespace Utf8Json
 
 
         readonly byte[] bytes;
+        readonly int end; // exclusive end of the readable range
         int offset;
 
         public JsonReader(byte[] bytes)
@@ -29,21 +30,36 @@ namespace Utf8Json
         public JsonReader(byte[] bytes, int offset)
         {
             this.bytes = bytes;
-            this.offset = offset;
+            this.end = bytes.Length;
+            this.offset = SkipBom(bytes, offset, this.end);
+        }
 
-            // skip bom
-            if (bytes.Length >= 3)
+        /// <summary>
+        /// Reads only <paramref name="count"/> bytes starting at <paramref name="offset"/>; bytes after the range are never read.
+        /// </summary>
+        public JsonReader(byte[] bytes, int offset, int count)
+        {
+            if (bytes == null) throw new ArgumentNullException("bytes");
+            if (offset < 0) throw new ArgumentOutOfRangeException("offset");
+            if (count < 0 || count > bytes.Length - offset) throw new ArgumentOutOfRangeException("count");
+
+            this.bytes = bytes;
+            this.end = offset + count;
+            this.offset = SkipBom(bytes, offset, this.end);
+        }
+
+        static int SkipBom(byte[] bytes, int offset, int end)
+        {
+            if (end - offset >= 3 && bytes[offset] == bom[0] && bytes[offset + 1] == bom[1] && bytes[offset + 2] == bom[2])
             {
-                if (bytes[offset] == bom[0] && bytes[offset + 1] == bom[1] && bytes[offset + 2] == bom[2])
-                {
-                    this.offset = offset += 3;
-                }
+                return offset + 3;
             }
+            return offset;
         }
 
         JsonParsingException CreateParsingException(string expected)
         {
-            var actual = ((char)bytes[offset]).ToString();
+            var actual = IsInRange ? ((char)bytes[offset]).ToString() : "";
             var pos = offset;
 
             try
@@ -78,7 +94,7 @@ namespace Utf8Json
 
         JsonParsingException CreateParsingExceptionMessage(string message)
         {
-            var actual = ((char)bytes[offset]).ToString();
+            var actual = IsInRange ? ((char)bytes[offset]).ToString() : "";
             var pos = offset;
 
             return new JsonParsingException(message, bytes, pos, pos, actual);
@@ -88,7 +104,7 @@ namespace Utf8Json
         {
             get
             {
-                return offset < bytes.Length;
+                return offset < end;
             }
         }
 
@@ -110,7 +126,7 @@ namespace Utf8Json
         public JsonToken GetCurrentJsonToken()
         {
             SkipWhiteSpace();
-            if (offset < bytes.Length)
+            if (offset < end)
             {
                 var c = bytes[offset];
                 switch (c)
@@ -256,7 +272,7 @@ namespace Utf8Json
         public void SkipWhiteSpace()
         {
             // eliminate array bound check
-            for (int i = offset; i < bytes.Length; i++)
+            for (int i = offset; i < end; i++)
             {
                 switch (bytes[i])
                 {
@@ -266,7 +282,7 @@ namespace Utf8Json
                     case 0x0D: // Carriage return
                         continue;
                     case (byte)'/': // BeginComment
-                        i = ReadComment(bytes, i);
+                        i = ReadComment(bytes, i, end);
                         continue;
                     // optimize skip jumptable
                     case 0:
@@ -318,7 +334,7 @@ namespace Utf8Json
                 }
             }
 
-            offset = bytes.Length;
+            offset = end;
         }
 
         public bool ReadIsNull()
@@ -326,6 +342,7 @@ namespace Utf8Json
             SkipWhiteSpace();
             if (IsInRange && bytes[offset] == 'n')
             {
+                if (end - offset < 4) goto ERROR;
                 if (bytes[offset + 1] != 'u') goto ERROR;
                 if (bytes[offset + 2] != 'l') goto ERROR;
                 if (bytes[offset + 3] != 'l') goto ERROR;
@@ -563,7 +580,7 @@ namespace Utf8Json
             var from = offset;
 
             // eliminate array-bound check
-            for (int i = offset; i < bytes.Length; i++)
+            for (int i = offset; i < end; i++)
             {
                 byte escapeCharacter = 0;
                 switch (bytes[i])
@@ -766,7 +783,7 @@ namespace Utf8Json
                 var from = offset;
 		int ii = 0;
 
-                for (int i = offset; i < bytes.Length; i++)
+                for (int i = offset; i < end; i++)
                 {
                     if (bytes[i] == (char)'\"')
                     {
@@ -811,8 +828,10 @@ namespace Utf8Json
         public bool ReadBoolean()
         {
             SkipWhiteSpace();
+            if (!IsInRange) throw CreateParsingException("true | false");
             if (bytes[offset] == 't')
             {
+                if (end - offset < 4) goto ERROR_TRUE;
                 if (bytes[offset + 1] != 'r') goto ERROR_TRUE;
                 if (bytes[offset + 2] != 'u') goto ERROR_TRUE;
                 if (bytes[offset + 3] != 'e') goto ERROR_TRUE;
@@ -821,6 +840,7 @@ namespace Utf8Json
             }
             else if (bytes[offset] == 'f')
             {
+                if (end - offset < 5) goto ERROR_FALSE;
                 if (bytes[offset + 1] != 'a') goto ERROR_FALSE;
                 if (bytes[offset + 2] != 'l') goto ERROR_FALSE;
                 if (bytes[offset + 3] != 's') goto ERROR_FALSE;
@@ -1004,7 +1024,7 @@ namespace Utf8Json
                     break;
                 case JsonToken.String:
                     offset += 1; // position is "\"";
-                    for (int i = offset; i < bytes.Length; i++)
+                    for (int i = offset; i < end; i++)
                     {
                         if (bytes[i] == (char)'\"')
                         {
@@ -1022,7 +1042,7 @@ namespace Utf8Json
                     }
                     throw CreateParsingExceptionMessage("not found end string.");
                 case JsonToken.Number:
-                    for (int i = offset; i < bytes.Length; i++)
+                    for (int i = offset; i < end; i++)
                     {
                         if (IsWordBreak(bytes[i]))
                         {
@@ -1030,7 +1050,7 @@ namespace Utf8Json
                             return;
                         }
                     }
-                    offset = bytes.Length;
+                    offset = end;
                     break;
                 case JsonToken.None:
                 default:
@@ -1111,7 +1131,7 @@ namespace Utf8Json
             SkipWhiteSpace();
 
             int readCount;
-            var v = NumberConverter.ReadInt64(bytes, offset, out readCount);
+            var v = NumberConverter.ReadInt64(bytes, offset, end, out readCount);
             if (readCount == 0)
             {
                 throw CreateParsingException("Number Token");
@@ -1141,7 +1161,7 @@ namespace Utf8Json
             SkipWhiteSpace();
 
             int readCount;
-            var v = NumberConverter.ReadUInt64(bytes, offset, out readCount);
+            var v = NumberConverter.ReadUInt64(bytes, offset, end, out readCount);
             if (readCount == 0)
             {
                 throw CreateParsingException("Number Token");
@@ -1154,7 +1174,7 @@ namespace Utf8Json
         {
             SkipWhiteSpace();
             int readCount;
-            var v = Utf8Json.Internal.DoubleConversion.StringToDoubleConverter.ToSingle(bytes, offset, out readCount);
+            var v = Utf8Json.Internal.DoubleConversion.StringToDoubleConverter.ToSingle(bytes, offset, end, out readCount);
             if (readCount == 0)
             {
                 throw CreateParsingException("Number Token");
@@ -1167,7 +1187,7 @@ namespace Utf8Json
         {
             SkipWhiteSpace();
             int readCount;
-            var v = Utf8Json.Internal.DoubleConversion.StringToDoubleConverter.ToDouble(bytes, offset, out readCount);
+            var v = Utf8Json.Internal.DoubleConversion.StringToDoubleConverter.ToDouble(bytes, offset, end, out readCount);
             if (readCount == 0)
             {
                 throw CreateParsingException("Number Token");
@@ -1180,7 +1200,7 @@ namespace Utf8Json
         {
             SkipWhiteSpace();
             var initialOffset = offset;
-            for (int i = offset; i < bytes.Length; i++)
+            for (int i = offset; i < end; i++)
             {
                 if (!NumberConverter.IsNumberRepresentation(bytes[i]))
                 {
@@ -1188,21 +1208,21 @@ namespace Utf8Json
                     goto END;
                 }
             }
-            offset = bytes.Length;
+            offset = end;
 
             END:
             return new ArraySegment<byte>(bytes, initialOffset, offset - initialOffset);
         }
 
         // return last offset.
-        static int ReadComment(byte[] bytes, int offset)
+        static int ReadComment(byte[] bytes, int offset, int end)
         {
             // current token is '/'
-            if (bytes[offset + 1] == '/')
+            if (offset + 1 < end && bytes[offset + 1] == '/')
             {
                 // single line
                 offset += 2;
-                for (int i = offset; i < bytes.Length; i++)
+                for (int i = offset; i < end; i++)
                 {
                     if (bytes[i] == '\r' || bytes[i] == '\n' || bytes[i] == '\0')
                     {
@@ -1212,13 +1232,13 @@ namespace Utf8Json
 
                 throw new JsonParsingException("Can not find end token of single line comment(\r or \n).");
             }
-            else if (bytes[offset + 1] == '*')
+            else if (offset + 1 < end && bytes[offset + 1] == '*')
             {
 
                 offset += 2; // '/' + '*';
-                for (int i = offset; i < bytes.Length; i++)
+                for (int i = offset; i < end; i++)
                 {
-                    if (bytes[i] == '*' && bytes[i + 1] == '/')
+                    if (bytes[i] == '*' && i + 1 < end && bytes[i + 1] == '/')
                     {
                         return i + 1;
                     }
