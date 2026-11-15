@@ -25,7 +25,6 @@
     <PackageReference Include="NetJSON" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="protobuf-net" />
-    <PackageReference Include="System.CodeDom" />
   </ItemGroup>
 
   <ItemGroup>
