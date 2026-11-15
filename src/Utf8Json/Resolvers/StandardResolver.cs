@@ -14,7 +14,11 @@ namespace Utf8Json.Resolvers
         public static readonly IJsonFormatterResolver SnakeCase = SnakeCaseStandardResolver.Instance;
         /// <summary>AllowPrivate:False, ExcludeNull:True,  NameMutate:Original</summary>
         public static readonly IJsonFormatterResolver ExcludeNull = ExcludeNullStandardResolver.Instance;
-        /// <summary>AllowPrivate:False, ExcludeNull:True,  NameMutate:Original</summary>
+        /// <summary>AllowPrivate:False, ExcludeNull:True, ExcludeDefault:True, NameMutate:Original</summary>
+        /// <remarks>
+        /// ExcludeDefault skips members of primitive, enum and <see cref="decimal"/> type whose value equals their default (0, false, '\0', the enum's 0 value).
+        /// <see cref="Nullable{T}"/> members are skipped only when null, so a nullable holding 0 is written. Struct and reference members are always written; their own members follow the same rules, so a default struct serializes as {}.
+        /// </remarks>
         public static readonly IJsonFormatterResolver ExcludeNullExcludeDefault = ExcludeNullExcludeDefaultStandardResolver.Instance;
         /// <summary>AllowPrivate:False, ExcludeNull:True,  NameMutate:CamelCase</summary>
         public static readonly IJsonFormatterResolver ExcludeNullCamelCase = ExcludeNullCamelCaseStandardResolver.Instance;
@@ -30,6 +34,7 @@ namespace Utf8Json.Resolvers
         /// <summary>AllowPrivate:True,  ExcludeNull:True,  NameMutate:Original</summary>
         public static readonly IJsonFormatterResolver AllowPrivateExcludeNull = AllowPrivateExcludeNullStandardResolver.Instance;
         /// <summary>AllowPrivate:True,  ExcludeNull:True, ExcludeDefault:True, NameMutate:Original</summary>
+        /// <remarks>See <see cref="ExcludeNullExcludeDefault"/> for which members ExcludeDefault skips.</remarks>
         public static readonly IJsonFormatterResolver AllowPrivateExcludeNullExcludeDefault = AllowPrivateExcludeNullExcludeDefaultStandardResolver.Instance;
         /// <summary>AllowPrivate:True,  ExcludeNull:True,  NameMutate:CamelCase</summary>
         public static readonly IJsonFormatterResolver AllowPrivateExcludeNullCamelCase = AllowPrivateExcludeNullCamelCaseStandardResolver.Instance;

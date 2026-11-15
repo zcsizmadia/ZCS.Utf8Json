@@ -26,7 +26,11 @@ namespace Utf8Json.Resolvers
         public static readonly IJsonFormatterResolver SnakeCase = DynamicObjectResolverAllowPrivateFalseExcludeNullFalseNameMutateSnakeCase.Instance;
         /// <summary>AllowPrivate:False, ExcludeNull:True,  NameMutate:Original</summary>
         public static readonly IJsonFormatterResolver ExcludeNull = DynamicObjectResolverAllowPrivateFalseExcludeNullTrueNameMutateOriginal.Instance;
-        /// <summary>AllowPrivate:False, ExcludeNull:True, ExcludeDefault:True,  NameMutate:Original</summary>
+        /// <summary>AllowPrivate:False, ExcludeNull:True, ExcludeDefault:True, NameMutate:Original</summary>
+        /// <remarks>
+        /// ExcludeDefault skips members of primitive, enum and <see cref="decimal"/> type whose value equals their default (0, false, '\0', the enum's 0 value).
+        /// <see cref="Nullable{T}"/> members are skipped only when null, so a nullable holding 0 is written. Struct and reference members are always written; their own members follow the same rules, so a default struct serializes as {}.
+        /// </remarks>
         public static readonly IJsonFormatterResolver ExcludeNullExcludeDefault = DynamicObjectResolverAllowPrivateFalseExcludeNullTrueExcludeDefaultTrueNameMutateOriginal.Instance;
         /// <summary>AllowPrivate:False, ExcludeNull:True,  NameMutate:CamelCase</summary>
         public static readonly IJsonFormatterResolver ExcludeNullCamelCase = DynamicObjectResolverAllowPrivateFalseExcludeNullTrueNameMutateCamelCase.Instance;
@@ -41,7 +45,8 @@ namespace Utf8Json.Resolvers
         public static readonly IJsonFormatterResolver AllowPrivateSnakeCase = DynamicObjectResolverAllowPrivateTrueExcludeNullFalseNameMutateSnakeCase.Instance;
         /// <summary>AllowPrivate:True,  ExcludeNull:True,  NameMutate:Original</summary>
         public static readonly IJsonFormatterResolver AllowPrivateExcludeNull = DynamicObjectResolverAllowPrivateTrueExcludeNullTrueNameMutateOriginal.Instance;
-        /// <summary>AllowPrivate:True,  ExcludeNull:True, ExcludeDefault:True,  NameMutate:Original</summary>
+        /// <summary>AllowPrivate:True,  ExcludeNull:True, ExcludeDefault:True, NameMutate:Original</summary>
+        /// <remarks>See <see cref="ExcludeNullExcludeDefault"/> for which members ExcludeDefault skips.</remarks>
         public static readonly IJsonFormatterResolver AllowPrivateExcludeNullExcludeDefault = DynamicObjectResolverAllowPrivateTrueExcludeNullTrueExcludeDefaultTrueNameMutateOriginal.Instance;
         /// <summary>AllowPrivate:True,  ExcludeNull:True,  NameMutate:CamelCase</summary>
         public static readonly IJsonFormatterResolver AllowPrivateExcludeNullCamelCase = DynamicObjectResolverAllowPrivateTrueExcludeNullTrueNameMutateCamelCase.Instance;
@@ -683,7 +688,7 @@ namespace Utf8Json.Resolvers.Internal
                 stringByteKeysField = typeBuilder.DefineField("stringByteKeys", typeof(byte[][]), FieldAttributes.Private | FieldAttributes.InitOnly);
 
                 var il = method.GetILGenerator();
-                customFormatterLookup = BuildConstructor(typeBuilder, serializationInfo, method, stringByteKeysField, il, excludeNull, hasShouldSerialize);
+                customFormatterLookup = BuildConstructor(typeBuilder, serializationInfo, method, stringByteKeysField, il, excludeNull, hasShouldSerialize, excludeDefaultValue);
             }
 
             {
@@ -849,7 +854,7 @@ namespace Utf8Json.Resolvers.Internal
                 new[] { stringByteKeysField.ToArray(), serializeCustomFormatters.ToArray(), deserializeCustomFormatters.ToArray(), serializeDelegate, deserializeDelegate });
         }
 
-        static Dictionary<MetaMember, FieldInfo> BuildConstructor(TypeBuilder builder, MetaType info, ConstructorInfo method, FieldBuilder stringByteKeysField, ILGenerator il, bool excludeNull, bool hasShouldSerialize)
+        static Dictionary<MetaMember, FieldInfo> BuildConstructor(TypeBuilder builder, MetaType info, ConstructorInfo method, FieldBuilder stringByteKeysField, ILGenerator il, bool excludeNull, bool hasShouldSerialize, bool excludeDefaultValue)
         {
             il.EmitLdarg(0);
             il.Emit(OpCodes.Call, EmitInfo.ObjectCtor);
@@ -865,7 +870,7 @@ namespace Utf8Json.Resolvers.Internal
                 il.Emit(OpCodes.Dup);
                 il.EmitLdc_I4(i);
                 il.Emit(OpCodes.Ldstr, item.Name);
-                if (excludeNull || hasShouldSerialize)
+                if (excludeNull || hasShouldSerialize || excludeDefaultValue)
                 {
                     il.EmitCall(EmitInfo.JsonWriter.GetEncodedPropertyName);
                 }
@@ -944,7 +949,37 @@ namespace Utf8Json.Resolvers.Internal
             return dict;
         }
 
-        static void BuildSerialize(Type type, MetaType info, ILGenerator il, Action emitStringByteKeys, Func<int, MetaMember, bool> tryEmitLoadCustomFormatter, bool excludeNull, bool hasShouldSerialize, bool excludeDefaultValue, int firstArgIndex)
+        // Pushes a zero whose evaluation-stack type matches a value of the given primitive or enum type,
+        // so the following beq compares legal operand pairs (ECMA-335 III.1.5) on every runtime, not just RyuJIT.
+        static void EmitZeroOfSameStackType(ILGenerator il, Type type)
+        {
+            if (type.IsEnum) type = Enum.GetUnderlyingType(type);
+
+            if (type == typeof(float))
+            {
+                il.Emit(OpCodes.Ldc_R4, 0f);
+            }
+            else if (type == typeof(double))
+            {
+                il.Emit(OpCodes.Ldc_R8, 0d);
+            }
+            else if (type == typeof(long) || type == typeof(ulong))
+            {
+                il.Emit(OpCodes.Ldc_I8, 0L);
+            }
+            else if (type == typeof(IntPtr) || type == typeof(UIntPtr))
+            {
+                il.Emit(OpCodes.Ldc_I4_0);
+                il.Emit(OpCodes.Conv_I);
+            }
+            else
+            {
+                // bool, char, byte, sbyte, short, ushort, int, uint
+                il.Emit(OpCodes.Ldc_I4_0);
+            }
+        }
+
+        static void BuildSerialize(Type type, MetaType info, ILGenerator il,Action emitStringByteKeys, Func<int, MetaMember, bool> tryEmitLoadCustomFormatter, bool excludeNull, bool hasShouldSerialize, bool excludeDefaultValue, int firstArgIndex)
         {
             var argWriter = new ArgumentField(il, firstArgIndex);
             var argValue = new ArgumentField(il, firstArgIndex + 1, type);
@@ -1031,7 +1066,7 @@ namespace Utf8Json.Resolvers.Internal
             LocalBuilder wrote = null;
             Label endObjectLabel = il.DefineLabel();
             Label[] labels = null;
-            if (excludeNull || hasShouldSerialize)
+            if (excludeNull || hasShouldSerialize || excludeDefaultValue)
             {
                 // wrote = false; writer.WriteBeginObject();
                 wrote = il.DeclareLocal(typeof(bool));
@@ -1071,40 +1106,22 @@ namespace Utf8Json.Resolvers.Internal
                     if (excludeDefaultValue)
                     {
                         // if (value == default) continue;
-                        if (item.Type.IsPrimitive)
-                        {
-                            if (item.Type == typeof(double))
-                            {
-                                argValue.EmitLoad();
-                                item.EmitLoadValue(il);
-                                il.Emit(OpCodes.Ldc_R4, 0);
-                                il.Emit(OpCodes.Ceq);
-                                il.Emit(OpCodes.Brtrue_S, (index < labels.Length - 1) ? labels[index + 1] : endObjectLabel); // default value, next label
-                            }
-                            else
-                            {
-                                argValue.EmitLoad();
-                                item.EmitLoadValue(il);
-                                il.Emit(OpCodes.Ldc_I4_0);
-                                il.Emit(OpCodes.Ceq);
-                                il.Emit(OpCodes.Brtrue_S, (index < labels.Length - 1) ? labels[index + 1] : endObjectLabel); // default value, next label
-                            }
-                        }
-                        else if (item.Type == typeof(decimal))
+                        // Primitives and enums only; Nullable<T> is handled by excludeNull, and structs/other types are always written.
+                        var nextLabel = (index < labels.Length - 1) ? labels[index + 1] : endObjectLabel;
+                        if (item.Type == typeof(decimal))
                         {
                             argValue.EmitLoad();
                             item.EmitLoadValue(il);
                             il.Emit(OpCodes.Ldsfld, EmitInfo.DecimalZeroFld);
                             il.EmitCall(EmitInfo.DecimalEquals);
-                            il.Emit(OpCodes.Brtrue_S, (index < labels.Length - 1) ? labels[index + 1] : endObjectLabel); // default value, next label
+                            il.Emit(OpCodes.Brtrue, nextLabel); // default value, next label
                         }
-                        else if (item.Type.IsEnum)
+                        else if (item.Type.IsPrimitive || item.Type.IsEnum)
                         {
                             argValue.EmitLoad();
                             item.EmitLoadValue(il);
-                            il.Emit(OpCodes.Ldc_I4_0);
-                            il.Emit(OpCodes.Ceq);
-                            il.Emit(OpCodes.Brtrue_S, (index < labels.Length - 1) ? labels[index + 1] : endObjectLabel); // default value, next label
+                            EmitZeroOfSameStackType(il, item.Type);
+                            il.Emit(OpCodes.Beq, nextLabel); // default value, next label
                         }
                     }
                     if (hasShouldSerialize && item.ShouldSerializeMethodInfo != null)
@@ -1139,7 +1156,7 @@ namespace Utf8Json.Resolvers.Internal
 #if NETSTANDARD
                 // same as in constructor
                 byte[] rawField;
-                if (excludeNull || hasShouldSerialize)
+                if (excludeNull || hasShouldSerialize || excludeDefaultValue)
                 {
                     rawField = JsonWriter.GetEncodedPropertyName(item.Name);
                 }
