@@ -8,10 +8,14 @@ namespace Utf8Json.Internal
     /// </summary>
     internal static class DynamicCodeSupport
     {
+        // Lets the test suite exercise the non-emit fallbacks on a JIT runtime (set through reflection). Never set in production.
+        static bool simulateUnsupported = false;
+
         public static bool IsSupported
         {
             get
             {
+                if (simulateUnsupported) return false;
 #if NETCOREAPP
                 return System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported;
 #else
@@ -28,6 +32,28 @@ namespace Utf8Json.Internal
         public static NotSupportedException CreateNotSupportedException(string what)
         {
             return new NotSupportedException(what + " requires dynamic code generation. " + NotSupportedHint);
+        }
+
+        /// <summary>
+        /// MethodInfo.Invoke that rethrows the target's own exception instead of TargetInvocationException,
+        /// so reflection-based fallbacks surface the same exceptions as the emitted code paths.
+        /// </summary>
+        public static object Invoke(System.Reflection.MethodInfo method, object target, object[] args)
+        {
+            try
+            {
+                return method.Invoke(target, args);
+            }
+            catch (System.Reflection.TargetInvocationException ex)
+            {
+                if (ex.InnerException == null) throw;
+#if NETSTANDARD || NETCOREAPP
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+                throw; // unreachable
+#else
+                throw ex.InnerException;
+#endif
+            }
         }
     }
 }

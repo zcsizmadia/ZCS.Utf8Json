@@ -309,6 +309,55 @@ namespace Utf8Json
 
                 public CompiledMethods(Type type)
                 {
+                    if (!DynamicCodeSupport.IsSupported)
+                    {
+                        // No Reflection.Emit (native AOT): invoke the generic JsonSerializer methods through reflection.
+                        var mSerialize1 = GetMethod(type, "Serialize", new[] { null, typeof(IJsonFormatterResolver) });
+                        var mSerialize2 = GetMethod(type, "Serialize", new[] { typeof(Stream), null, typeof(IJsonFormatterResolver) });
+                        var mSerialize3 = GetMethod(type, "Serialize", new[] { typeof(JsonWriter).MakeByRefType(), null, typeof(IJsonFormatterResolver) });
+                        var mSerializeUnsafe = GetMethod(type, "SerializeUnsafe", new[] { null, typeof(IJsonFormatterResolver) });
+                        var mToJsonString = GetMethod(type, "ToJsonString", new[] { null, typeof(IJsonFormatterResolver) });
+                        var mDeserialize1 = GetMethod(type, "Deserialize", new[] { typeof(string), typeof(IJsonFormatterResolver) });
+                        var mDeserialize2 = GetMethod(type, "Deserialize", new[] { typeof(byte[]), typeof(int), typeof(IJsonFormatterResolver) });
+                        var mDeserialize3 = GetMethod(type, "Deserialize", new[] { typeof(Stream), typeof(IJsonFormatterResolver) });
+                        var mDeserialize4 = GetMethod(type, "Deserialize", new[] { typeof(JsonReader).MakeByRefType(), typeof(IJsonFormatterResolver) });
+
+                        serialize1 = (obj, resolver) => (byte[])DynamicCodeSupport.Invoke(mSerialize1, null, new object[] { obj, resolver });
+                        serialize2 = (stream, obj, resolver) => DynamicCodeSupport.Invoke(mSerialize2, null, new object[] { stream, obj, resolver });
+                        serialize3 = (ref JsonWriter writer, object obj, IJsonFormatterResolver resolver) =>
+                        {
+                            var args = new object[] { writer, obj, resolver };
+                            DynamicCodeSupport.Invoke(mSerialize3, null, args);
+                            writer = (JsonWriter)args[0]; // copy back the by-ref writer
+                        };
+                        serializeUnsafe = (obj, resolver) => (ArraySegment<byte>)DynamicCodeSupport.Invoke(mSerializeUnsafe, null, new object[] { obj, resolver });
+                        toJsonString = (obj, resolver) => (string)DynamicCodeSupport.Invoke(mToJsonString, null, new object[] { obj, resolver });
+                        deserialize1 = (json, resolver) => DynamicCodeSupport.Invoke(mDeserialize1, null, new object[] { json, resolver });
+                        deserialize2 = (bytes, offset, resolver) => DynamicCodeSupport.Invoke(mDeserialize2, null, new object[] { bytes, offset, resolver });
+                        deserialize3 = (stream, resolver) => DynamicCodeSupport.Invoke(mDeserialize3, null, new object[] { stream, resolver });
+                        deserialize4 = (ref JsonReader reader, IJsonFormatterResolver resolver) =>
+                        {
+                            var args = new object[] { reader, resolver };
+                            var result = DynamicCodeSupport.Invoke(mDeserialize4, null, args);
+                            reader = (JsonReader)args[0]; // copy back the by-ref reader (its offset advanced)
+                            return result;
+                        };
+
+#if NETSTANDARD
+                        var mSerializeAsync = GetMethod(type, "SerializeAsync", new[] { typeof(Stream), null, typeof(IJsonFormatterResolver) });
+                        var mDeserializeAsync = GetMethod(type, "DeserializeAsync", new[] { typeof(Stream), typeof(IJsonFormatterResolver) });
+
+                        serializeAsync = (stream, obj, resolver) => (System.Threading.Tasks.Task)DynamicCodeSupport.Invoke(mSerializeAsync, null, new object[] { stream, obj, resolver });
+                        deserializeAsync = async (stream, resolver) =>
+                        {
+                            var task = (System.Threading.Tasks.Task)DynamicCodeSupport.Invoke(mDeserializeAsync, null, new object[] { stream, resolver });
+                            await task.ConfigureAwait(false);
+                            return task.GetType().GetRuntimeProperty("Result").GetValue(task);
+                        };
+#endif
+                        return;
+                    }
+
                     {
                         var dm = new DynamicMethod("serialize1", typeof(byte[]), new[] { typeof(object), typeof(IJsonFormatterResolver) }, type.Module, true);
                         var il = dm.GetILGenerator();

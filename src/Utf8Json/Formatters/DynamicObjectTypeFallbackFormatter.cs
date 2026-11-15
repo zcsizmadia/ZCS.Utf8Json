@@ -53,6 +53,12 @@ namespace Utf8Json.Formatters
                         }
 
                         var t = type;
+                        if (!DynamicCodeSupport.IsSupported)
+                        {
+                            // No Reflection.Emit (native AOT): call IJsonFormatter<T>.Serialize through reflection.
+                            formatterAndDelegate = new KeyValuePair<object, SerializeMethod>(formatter, CreateReflectionSerializeMethod(formatter, t));
+                        }
+                        else
                         {
                             var dm = new DynamicMethod("Serialize", null, new[] { typeof(object), typeof(JsonWriter).MakeByRefType(), typeof(object), typeof(IJsonFormatterResolver) }, type.Module, true);
                             var il = dm.GetILGenerator();
@@ -84,6 +90,31 @@ namespace Utf8Json.Formatters
         public object Deserialize(ref JsonReader reader, IJsonFormatterResolver formatterResolver)
         {
             return PrimitiveObjectFormatter.Default.Deserialize(ref reader, formatterResolver);
+        }
+
+        static SerializeMethod CreateReflectionSerializeMethod(object formatter, System.Type t)
+        {
+            // Prefer the interface the formatter actually implements over MakeGenericType, which is less reliable under AOT.
+            System.Type formatterInterface = null;
+            foreach (var implInterface in formatter.GetType().GetTypeInfo().ImplementedInterfaces)
+            {
+                var ti = implInterface.GetTypeInfo();
+                if (ti.IsGenericType && ti.GetGenericTypeDefinition() == typeof(IJsonFormatter<>) && ti.GenericTypeArguments[0] == t)
+                {
+                    formatterInterface = implInterface;
+                    break;
+                }
+            }
+            if (formatterInterface == null) formatterInterface = typeof(IJsonFormatter<>).MakeGenericType(t);
+
+            var serialize = formatterInterface.GetRuntimeMethod("Serialize", new[] { typeof(JsonWriter).MakeByRefType(), t, typeof(IJsonFormatterResolver) });
+
+            return (object dynamicFormatter, ref JsonWriter writer, object value, IJsonFormatterResolver formatterResolver) =>
+            {
+                var args = new object[] { writer, value, formatterResolver };
+                DynamicCodeSupport.Invoke(serialize, dynamicFormatter, args);
+                writer = (JsonWriter)args[0]; // copy back the by-ref writer (its buffer may have been grown)
+            };
         }
     }
 }

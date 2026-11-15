@@ -143,8 +143,9 @@ namespace Utf8Json.Resolvers
         {
             if (!Utf8Json.Internal.DynamicCodeSupport.IsSupported)
             {
-                throw Utf8Json.Internal.DynamicCodeSupport.CreateNotSupportedException(
-                    "CompositeResolver.Create (DynamicCompositeResolver)");
+                // No Reflection.Emit (native AOT): same lookup, cached per instance in a hash table
+                // instead of in an emitted static generic class.
+                return new CachedCompositeResolver(formatters, resolvers);
             }
 
             var id = Guid.NewGuid().ToString().Replace("-", "");
@@ -230,5 +231,27 @@ namespace Utf8Json.Resolvers
         }
 
         public abstract IJsonFormatter<T> GetFormatter<T>();
+
+        sealed class CachedCompositeResolver : DynamicCompositeResolver
+        {
+            readonly Utf8Json.Internal.ThreadsafeTypeKeyHashTable<object> cache = new Utf8Json.Internal.ThreadsafeTypeKeyHashTable<object>();
+
+            public CachedCompositeResolver(IJsonFormatter[] formatters, IJsonFormatterResolver[] resolvers)
+                : base(formatters, resolvers)
+            {
+            }
+
+            public override IJsonFormatter<T> GetFormatter<T>()
+            {
+                object formatter;
+                if (!cache.TryGetValue(typeof(T), out formatter))
+                {
+                    // A race only computes the same value twice; TryAdd keeps the first.
+                    formatter = GetFormatterLoop<T>();
+                    cache.TryAdd(typeof(T), formatter);
+                }
+                return (IJsonFormatter<T>)formatter;
+            }
+        }
     }
 }
