@@ -11,6 +11,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # required for NuGet trusted publishing (OIDC)
     steps:
     - uses: actions/checkout@v7
     - name: Setup .NET SDK
@@ -34,6 +37,13 @@ jobs:
       if: github.event_name != 'release'
       run: dotnet pack -c Release --no-restore
 
+    - name: NuGet login (trusted publishing)
+      if: github.event_name == 'release'
+      id: nuget-login
+      uses: NuGet/login@v1
+      with:
+        user: zcsizmadia
+
     - name: Pack and push to nuget.org (release)
       if: github.event_name == 'release'
       run: |
@@ -42,4 +52,4 @@ jobs:
         [[ "${VERSION:0:1}" == "v" ]] && VERSION="${VERSION:1}"
         [[ "$VERSION" =~ ^[1-9][0-9]*\.[0-9]+\.[0-9]+(-[a-z0-9]+\.[0-9]+|)$ ]] || (echo "Incorrect version! ($VERSION)"; exit 1)
         dotnet pack -c Release --no-restore -p:PackageVersion="$VERSION" -o nupkg
-        dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}}
+        dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
