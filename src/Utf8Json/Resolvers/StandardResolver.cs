@@ -17,7 +17,7 @@ namespace Utf8Json.Resolvers
         /// <summary>AllowPrivate:False, ExcludeNull:True, ExcludeDefault:True, NameMutate:Original</summary>
         /// <remarks>
         /// ExcludeDefault skips members of primitive, enum and <see cref="decimal"/> type whose value equals their default (0, false, '\0', the enum's 0 value).
-        /// <see cref="Nullable{T}"/> members are skipped only when null, so a nullable holding 0 is written. Struct and reference members are always written; their own members follow the same rules, so a default struct serializes as {}.
+        /// <see cref="System.Nullable{T}"/> members are skipped only when null, so a nullable holding 0 is written. Struct and reference members are always written; their own members follow the same rules, so a default struct serializes as {}.
         /// </remarks>
         public static readonly IJsonFormatterResolver ExcludeNullExcludeDefault = ExcludeNullExcludeDefaultStandardResolver.Instance;
         /// <summary>AllowPrivate:False, ExcludeNull:True,  NameMutate:CamelCase</summary>
