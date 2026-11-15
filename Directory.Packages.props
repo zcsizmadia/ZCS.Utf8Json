@@ -6,31 +6,31 @@
   <!-- Run "dotnet list package (dash,dash)outdated" to see the latest versions of each package.-->
 	
   <ItemGroup>
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.13" />
-    <PackageVersion Include="System.CodeDom" Version="10.0.12" />
-    <PackageVersion Include="System.Collections.Immutable" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.14" />
+    <PackageVersion Include="System.CodeDom" Version="11.0.0" />
+    <PackageVersion Include="System.Collections.Immutable" Version="11.0.0" />
     <PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageVersion Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
     <PackageVersion Include="System.ValueTuple" Version="4.6.2" />
-    <PackageVersion Include="System.Text.Encodings.Web" Version="10.0.12" />
+    <PackageVersion Include="System.Text.Encodings.Web" Version="11.0.0" />
 
     <!--
       Build, Test, Code Analysis
     -->
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.12.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.12.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />
 
     <!--
       Benchmark
     -->
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
     <PackageVersion Include="Jil" Version="2.17.0" />
-    <PackageVersion Include="MessagePack" Version="3.1.9" />
+    <PackageVersion Include="MessagePack" Version="3.1.12" />
     <PackageVersion Include="NetJSON" Version="1.4.7" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageVersion Include="protobuf-net" Version="3.4.30" />
+    <PackageVersion Include="protobuf-net" Version="3.4.40" />
   </ItemGroup>
 </Project>

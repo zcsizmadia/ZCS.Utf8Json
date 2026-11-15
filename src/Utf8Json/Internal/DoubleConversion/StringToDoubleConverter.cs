@@ -132,6 +132,17 @@ namespace Utf8Json.Internal.DoubleConversion
         {
             return unchecked((float)StringToIeee(new Iterator(buffer, offset), buffer.Length - offset, false, out readCount));
         }
+
+        // end is the exclusive end of the readable range.
+        public static double ToDouble(byte[] buffer, int offset, int end, out int readCount)
+        {
+            return StringToIeee(new Iterator(buffer, offset), end - offset, true, out readCount);
+        }
+
+        public static float ToSingle(byte[] buffer, int offset, int end, out int readCount)
+        {
+            return unchecked((float)StringToIeee(new Iterator(buffer, offset), end - offset, false, out readCount));
+        }
     }
 
     // port

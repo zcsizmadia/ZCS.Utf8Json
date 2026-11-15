@@ -82,15 +82,25 @@ namespace Utf8Json.Internal
 #endif
         public static long ReadInt64(byte[] bytes, int offset, out int readCount)
         {
+            return ReadInt64(bytes, offset, bytes.Length, out readCount);
+        }
+
+        // end is the exclusive end of the readable range, so a number at the end of a slice
+        // does not absorb digits that follow the slice in the same buffer.
+#if NETSTANDARD
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        internal static long ReadInt64(byte[] bytes, int offset, int end, out int readCount)
+        {
             var value = 0L;
             var sign = 1;
 
-            if (bytes[offset] == '-')
+            if (offset < end && bytes[offset] == '-')
             {
                 sign = -1;
             }
 
-            for (int i = ((sign == -1) ? offset + 1 : offset); i < bytes.Length; i++)
+            for (int i = ((sign == -1) ? offset + 1 : offset); i < end; i++)
             {
                 if (!IsNumber(bytes[i]))
                 {
@@ -101,7 +111,7 @@ namespace Utf8Json.Internal
                 // long.MinValue causes overflow so use unchecked.
                 value = unchecked(value * 10 + (bytes[i] - '0'));
             }
-            readCount = bytes.Length - offset;
+            readCount = end - offset;
 
             END:
             return unchecked(value * sign);
@@ -132,9 +142,17 @@ namespace Utf8Json.Internal
 #endif
         public static ulong ReadUInt64(byte[] bytes, int offset, out int readCount)
         {
+            return ReadUInt64(bytes, offset, bytes.Length, out readCount);
+        }
+
+#if NETSTANDARD
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        internal static ulong ReadUInt64(byte[] bytes, int offset, int end, out int readCount)
+        {
             var value = 0UL;
 
-            for (int i = offset; i < bytes.Length; i++)
+            for (int i = offset; i < end; i++)
             {
                 if (!IsNumber(bytes[i]))
                 {
@@ -144,7 +162,7 @@ namespace Utf8Json.Internal
 
                 value = checked(value * 10 + (ulong)(bytes[i] - '0'));
             }
-            readCount = bytes.Length - offset;
+            readCount = end - offset;
 
             END:
             return value;

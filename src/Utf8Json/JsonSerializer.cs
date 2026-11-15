@@ -213,6 +213,64 @@ namespace Utf8Json
             return formatter.Deserialize(ref reader, resolver);
         }
 
+        /// <summary>
+        /// Deserializes from <paramref name="count"/> bytes starting at <paramref name="offset"/>; bytes after the range are never read.
+        /// </summary>
+        public static T Deserialize<T>(byte[] bytes, int offset, int count)
+        {
+            return Deserialize<T>(bytes, offset, count, defaultResolver);
+        }
+
+        /// <summary>
+        /// Deserializes from <paramref name="count"/> bytes starting at <paramref name="offset"/>; bytes after the range are never read.
+        /// </summary>
+        public static T Deserialize<T>(byte[] bytes, int offset, int count, IJsonFormatterResolver resolver)
+        {
+            if (resolver == null) resolver = DefaultResolver;
+
+            var reader = new JsonReader(bytes, offset, count);
+            var formatter = resolver.GetFormatterWithVerify<T>();
+            return formatter.Deserialize(ref reader, resolver);
+        }
+
+        public static T Deserialize<T>(ArraySegment<byte> bytes)
+        {
+            return Deserialize<T>(bytes.Array, bytes.Offset, bytes.Count, defaultResolver);
+        }
+
+        public static T Deserialize<T>(ArraySegment<byte> bytes, IJsonFormatterResolver resolver)
+        {
+            return Deserialize<T>(bytes.Array, bytes.Offset, bytes.Count, resolver);
+        }
+
+#if NETSTANDARD2_1 || NETCOREAPP
+
+        /// <summary>
+        /// Deserializes from <paramref name="bytes"/>. Array-backed memory (including pooled arrays) is read in place;
+        /// other memory is copied to a temporary array first.
+        /// </summary>
+        public static T Deserialize<T>(ReadOnlyMemory<byte> bytes)
+        {
+            return Deserialize<T>(bytes, defaultResolver);
+        }
+
+        /// <summary>
+        /// Deserializes from <paramref name="bytes"/>. Array-backed memory (including pooled arrays) is read in place;
+        /// other memory is copied to a temporary array first.
+        /// </summary>
+        public static T Deserialize<T>(ReadOnlyMemory<byte> bytes, IJsonFormatterResolver resolver)
+        {
+            ArraySegment<byte> segment;
+            if (System.Runtime.InteropServices.MemoryMarshal.TryGetArray(bytes, out segment))
+            {
+                return Deserialize<T>(segment.Array, segment.Offset, segment.Count, resolver);
+            }
+
+            return Deserialize<T>(bytes.ToArray(), resolver);
+        }
+
+#endif
+
         public static T Deserialize<T>(ref JsonReader reader)
         {
             return Deserialize<T>(ref reader, defaultResolver);
@@ -242,31 +300,14 @@ namespace Utf8Json
                 ArraySegment<byte> buf2;
                 if (ms.TryGetBuffer(out buf2))
                 {
-                    // when token is number, can not use from pool(can not find end line).
-                    var token = new JsonReader(buf2.Array, buf2.Offset).GetCurrentJsonToken();
-                    if (token == JsonToken.Number)
-                    {
-                        var buf3 = new byte[buf2.Count];
-                        Buffer.BlockCopy(buf2.Array, buf2.Offset, buf3, 0, buf3.Length);
-                        return Deserialize<T>(buf3, 0, resolver);
-                    }
-
-                    return Deserialize<T>(buf2.Array, buf2.Offset, resolver);
+                    return Deserialize<T>(buf2.Array, buf2.Offset, buf2.Count, resolver);
                 }
             }
 #endif
             {
                 var buf = MemoryPool.GetBuffer();
                 var len = FillFromStream(stream, ref buf);
-
-                // when token is number, can not use from pool(can not find end line).
-                var token = new JsonReader(buf).GetCurrentJsonToken();
-                if (token == JsonToken.Number)
-                {
-                    buf = BinaryUtil.FastCloneWithResize(buf, len);
-                }
-
-                return Deserialize<T>(buf, resolver);
+                return Deserialize<T>(buf, 0, len, resolver);
             }
         }
 
@@ -296,14 +337,7 @@ namespace Utf8Json
                     }
                 }
 
-                // when token is number, can not use from pool(can not find end line).
-                var token = new JsonReader(buf).GetCurrentJsonToken();
-                if (token == JsonToken.Number)
-                {
-                    buf = BinaryUtil.FastCloneWithResize(buf, length);
-                }
-
-                return Deserialize<T>(buf, resolver);
+                return Deserialize<T>(buf, 0, length, resolver);
             }
             finally
             {
