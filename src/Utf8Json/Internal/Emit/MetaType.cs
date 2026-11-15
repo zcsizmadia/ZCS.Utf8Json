@@ -6,6 +6,8 @@ using System.Runtime.Serialization;
 
 namespace Utf8Json.Internal.Emit
 {
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal class MetaType
     {
         public Type Type { get; private set; }

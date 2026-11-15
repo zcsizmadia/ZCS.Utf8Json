@@ -7,6 +7,8 @@ using Utf8Json.Internal.Emit;
 
 namespace Utf8Json.Formatters
 {
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     public sealed class DynamicObjectTypeFallbackFormatter : IJsonFormatter<object>
     {
         delegate void SerializeMethod(object dynamicFormatter, ref JsonWriter writer, object value, IJsonFormatterResolver formatterResolver);

@@ -41,6 +41,7 @@ namespace Utf8Json
             return formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         public static object GetFormatterDynamic(this IJsonFormatterResolver resolver, Type type)
         {
             var methodInfo = typeof(IJsonFormatterResolver).GetRuntimeMethod("GetFormatter", Type.EmptyTypes);

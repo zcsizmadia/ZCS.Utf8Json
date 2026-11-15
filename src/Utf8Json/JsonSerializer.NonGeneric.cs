@@ -11,6 +11,8 @@ namespace Utf8Json
     // NonGeneric API
     public static partial class JsonSerializer
     {
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         public static class NonGeneric
         {
             static readonly Func<Type, CompiledMethods> CreateCompiledMethods;
@@ -290,6 +292,8 @@ namespace Utf8Json
 
 #endif
 
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
             class CompiledMethods
             {
                 public readonly Func<object, IJsonFormatterResolver, byte[]> serialize1;

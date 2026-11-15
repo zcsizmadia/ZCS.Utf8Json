@@ -8,6 +8,8 @@ using System.Runtime.Serialization;
 
 namespace Utf8Json.Internal.Emit
 {
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal class MetaMember
     {
         public string Name { get; private set; }
@@ -111,6 +113,8 @@ namespace Utf8Json.Internal.Emit
     }
 
     // used for serialize exception...
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal class StringConstantValueMetaMember : MetaMember
     {
         readonly string constant;
@@ -134,6 +138,8 @@ namespace Utf8Json.Internal.Emit
     }
 
     // used for serialize exception...
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal class InnerExceptionMetaMember : MetaMember
     {
         static readonly MethodInfo getInnerException = ExpressionUtility.GetPropertyInfo((Exception ex) => ex.InnerException).GetGetMethod();

@@ -9,7 +9,8 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <LangVersion>8</LangVersion>
         <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-        <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;NETSTANDARD2_0;</DefineConstants>
+        <!-- NETSTANDARD means "not the Unity source build" and is used by ~140 #if blocks; keep it for every TFM. Per-TFM symbols (NETSTANDARD2_0, NET8_0, ...) come from the SDK. -->
+        <DefineConstants>TRACE;DEBUG;NETSTANDARD</DefineConstants>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
@@ -22,7 +23,8 @@
         <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
         <NoWarn>1701;1702;1705;1591</NoWarn>
         <DocumentationFile>bin\Release\$(TargetFramework)\Utf8Json.xml</DocumentationFile>
-        <DefineConstants>RELEASE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+        <!-- See the Debug group: keep NETSTANDARD, let the SDK add per-TFM symbols. -->
+        <DefineConstants>RELEASE;NETSTANDARD</DefineConstants>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
     
@@ -33,7 +35,13 @@
         <None Remove="Formatters\*.meta" />
     </ItemGroup>
 
-    <ItemGroup>
+    <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
+        <!-- Enables the trim/AOT/single-file analyzers. The dynamic (Reflection.Emit) resolvers are annotated; see DynamicCodeSupport. -->
+        <IsAotCompatible>true</IsAotCompatible>
+    </PropertyGroup>
+
+    <!-- Only netstandard2.0 lacks these APIs in-box. -->
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <PackageReference Include="System.Reflection.Emit" />
         <PackageReference Include="System.Reflection.Emit.Lightweight" />
         <PackageReference Include="System.Threading.Tasks.Extensions" />

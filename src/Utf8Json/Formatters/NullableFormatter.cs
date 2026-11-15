@@ -41,7 +41,7 @@ namespace Utf8Json.Formatters
             this.underlyingFormatter = underlyingFormatter;
         }
 
-        public StaticNullableFormatter(Type formatterType, object[] formatterArguments)
+        public StaticNullableFormatter([System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)] Type formatterType, object[] formatterArguments)
         {
             try
             {

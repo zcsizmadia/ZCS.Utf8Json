@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 
 namespace Utf8Json.Resolvers
 {
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     public sealed class DynamicGenericResolver : IJsonFormatterResolver
     {
         public static readonly IJsonFormatterResolver Instance = new DynamicGenericResolver();
@@ -28,6 +30,8 @@ namespace Utf8Json.Resolvers
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -42,6 +46,8 @@ namespace Utf8Json.Resolvers
 
 namespace Utf8Json.Resolvers.Internal
 {
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal static class DynamicGenericResolverGetFormatterHelper
     {
         static readonly Dictionary<Type, Type> formatterMap = new Dictionary<Type, Type>()

@@ -25,6 +25,16 @@ namespace Utf8Json.Internal
             }
         }
 
+        /// <summary>Message for [RequiresDynamicCode] on the Reflection.Emit based resolvers and helpers.</summary>
+        public const string RequiresDynamicCodeMessage =
+            "Utf8Json generates formatters at run time with Reflection.Emit, which is not available under native AOT. " +
+            "Generate formatters ahead of time with Utf8Json.UniversalCodeGenerator and use a resolver composed of the generated resolver, BuiltinResolver and EnumResolver.";
+
+        /// <summary>Message for [RequiresUnreferencedCode] on the reflection based resolvers and helpers.</summary>
+        public const string RequiresUnreferencedCodeMessage =
+            "Utf8Json discovers members and formatter types through reflection, which the trimmer cannot see; serialized members may be removed. " +
+            "Generate formatters ahead of time with Utf8Json.UniversalCodeGenerator and use a resolver composed of the generated resolver, BuiltinResolver and EnumResolver.";
+
         public const string NotSupportedHint =
             "Dynamic code generation is not supported in this runtime (for example native AOT), so formatters cannot be generated at run time. " +
             "Generate formatters ahead of time with Utf8Json.UniversalCodeGenerator and register the generated resolver.";

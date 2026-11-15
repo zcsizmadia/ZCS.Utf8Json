@@ -37,6 +37,10 @@ namespace Utf8Json.Resolvers.Internal
         {
             public static readonly IJsonFormatter<T> formatter;
 
+            [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "The Nullable<enum> branch only runs when DynamicCodeSupport.IsSupported.")]
+            [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2055", Justification = "StaticNullableFormatter<T> is constructed over an enum (a value type), which always satisfies its struct/new() requirement.")]
+            [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2066", Justification = "Same as IL2055: the generic argument is an enum (a value type).")]
+            [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2091", Justification = "Same as IL2055: value types always have a parameterless constructor.")]
             static FormatterCache()
             {
                 var ti = typeof(T).GetTypeInfo();
@@ -46,6 +50,12 @@ namespace Utf8Json.Resolvers.Internal
                     // build underlying type and use wrapped formatter.
                     ti = ti.GenericTypeArguments[0].GetTypeInfo();
                     if (!ti.IsEnum)
+                    {
+                        return;
+                    }
+
+                    // Nullable<enum> needs MakeGenericType over the enum, which native AOT cannot guarantee: decline there.
+                    if (!Utf8Json.Internal.DynamicCodeSupport.IsSupported)
                     {
                         return;
                     }
@@ -83,6 +93,10 @@ namespace Utf8Json.Resolvers.Internal
         {
             public static readonly IJsonFormatter<T> formatter;
 
+            [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "The Nullable<enum> branch only runs when DynamicCodeSupport.IsSupported.")]
+            [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2055", Justification = "StaticNullableFormatter<T> is constructed over an enum (a value type), which always satisfies its struct/new() requirement.")]
+            [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2066", Justification = "Same as IL2055: the generic argument is an enum (a value type).")]
+            [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2091", Justification = "Same as IL2055: value types always have a parameterless constructor.")]
             static FormatterCache()
             {
                 var ti = typeof(T).GetTypeInfo();
@@ -92,6 +106,12 @@ namespace Utf8Json.Resolvers.Internal
                     // build underlying type and use wrapped formatter.
                     ti = ti.GenericTypeArguments[0].GetTypeInfo();
                     if (!ti.IsEnum)
+                    {
+                        return;
+                    }
+
+                    // Nullable<enum> needs MakeGenericType over the enum, which native AOT cannot guarantee: decline there.
+                    if (!Utf8Json.Internal.DynamicCodeSupport.IsSupported)
                     {
                         return;
                     }
