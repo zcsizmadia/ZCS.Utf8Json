@@ -15,12 +15,13 @@ namespace Utf8Json.Internal
         {
             get
             {
-                if (simulateUnsupported) return false;
 #if NETCOREAPP
-                return System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported;
+                // Feature check first: the AOT compiler substitutes RuntimeFeature.IsDynamicCodeSupported with a constant false,
+                // so this whole getter becomes constant false and every emit branch guarded by it is removed from the native image.
+                return System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported && !simulateUnsupported;
 #else
                 // netstandard and Unity builds cannot detect it; assume supported (the previous behaviour).
-                return true;
+                return !simulateUnsupported;
 #endif
             }
         }

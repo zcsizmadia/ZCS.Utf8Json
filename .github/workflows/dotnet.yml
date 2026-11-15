@@ -53,3 +53,31 @@ jobs:
         [[ "$VERSION" =~ ^[1-9][0-9]*\.[0-9]+\.[0-9]+(-[a-z0-9]+\.[0-9]+|)$ ]] || (echo "Incorrect version! ($VERSION)"; exit 1)
         dotnet pack -c Release --no-restore -p:PackageVersion="$VERSION" -o nupkg
         dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+
+  # Publishes tests/Utf8Json.AotSmokeTest with PublishAot=true (trim/AOT warnings are errors) and runs the native executable.
+  aot-smoke:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@v7
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v6
+      with:
+        dotnet-version: |
+          8.0.x
+          10.0.x
+          11.0.x
+
+    - name: Check generated formatters are up to date
+      run: |
+        dotnet run --project src/Utf8Json.UniversalCodeGenerator -c Release -f net10.0 -- \
+          -d tests/Utf8Json.AotSmokeTest/Models -o tests/Utf8Json.AotSmokeTest/Generated/Utf8JsonGenerated.cs -n AotSmoke
+        git diff --exit-code --ignore-cr-at-eol -- tests/Utf8Json.AotSmokeTest/Generated \
+          || (echo "::error::Generated formatters are stale; regenerate them (see tests/Utf8Json.AotSmokeTest/README.md)"; exit 1)
+
+    - name: Publish (native AOT)
+      run: dotnet publish tests/Utf8Json.AotSmokeTest -c Release -r linux-x64 -o aot-out
+
+    - name: Run native executable
+      run: ./aot-out/Utf8Json.AotSmokeTest

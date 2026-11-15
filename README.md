@@ -887,11 +887,17 @@ In Unity version, added `UnityResolver` to StandardResolver in default. It enabl
 
 `.unitypackage` is exists in [releases](https://github.com/neuecc/Utf8Json/releases) page. If you are using IL2CPP environment, requires code generator too, see following section.
 
-Pre Code Generation(Unity/Xamarin Supports)
+Pre Code Generation (native AOT, Unity IL2CPP, Xamarin)
 ---
-Utf8Json generates object formatter dynamically by [ILGenerator](https://msdn.microsoft.com/en-us/library/system.reflection.emit.ilgenerator.aspx). It is fast and transparently generated at run time. But it does not work on AOT environment(Xamarin, Unity IL2CPP, etc.).
+By default Utf8Json generates object formatters at run time with [ILGenerator](https://learn.microsoft.com/dotnet/api/system.reflection.emit.ilgenerator). This is fast and transparent, but it needs a JIT. It does not work under native AOT (`PublishAot`), Unity IL2CPP or other AOT environments. There you generate the formatters ahead of time with `Utf8Json.UniversalCodeGenerator`, a Roslyn-based command line tool that analyzes your source files.
 
-If you want to run on IL2CPP(or other AOT env), you need pre-code generation. `Utf8Json.UniversalCodeGenerator.exe` is code generator of Utf8Json. It is exists in releases page's `Utf8Json.UniversalCodeGenerator.zip` that run on win/mac/linux. It is using [Roslyn](https://github.com/dotnet/roslyn) so analyze source code and created by [.NET Core](https://www.microsoft.com/net/) for cross platform application.
+### Running the generator
+
+No prebuilt generator binaries are published from this repository; build it from source with the .NET SDK:
+
+```
+dotnet run --project src/Utf8Json.UniversalCodeGenerator -c Release -f net10.0 -- -d "src/Shared/Request,src/Shared/Response" -o "Utf8JsonGenerated.cs"
+```
 
 ```
 arguments help:
@@ -904,37 +910,42 @@ arguments help:
   -n, --namespace=VALUE         [optional, default=Utf8Json]Set namespace root name
 ```
 
-```csharp
-// Simple usage(directory)
-Utf8Json.UniversalCodeGenerator.exe -d "..\src\Shared\Request,..\src\Shared\Response" -o "Utf8JsonGenerated.cs"
-```
+By default the resolver is generated as `Utf8Json.Resolvers.GeneratedResolver` and the formatters as `Utf8Json.Formatters.***`. The generated resolver also registers closed formatters for the generic collections your types use (for example `ListFormatter<Guid>`), which the dynamic `DynamicGenericResolver` cannot build under native AOT for value types.
 
-If you create DLL by msbuild project, you can use Pre/Post build event or hook your Unity's post/pre process.
+You can run the generator from a pre-build step (or your Unity pre-process hook) so the output stays in sync with your models.
 
-```xml
-<PropertyGroup>
-    <PreBuildEvent>
-        Utf8Json.UniversalCodeGenerator.exe, here is useful for analyze/generate target is self project.
-    </PreBuildEvent>
-    <PostBuildEvent>
-        Utf8Json.UniversalCodeGenerator.exe, here is useful for analyze target is another project.
-    </PostBuildEvent>
-</PropertyGroup>
-```
+### Setting up the resolver
 
-In default, generates resolver to Utf8Json.Resolvers.GeneratedResolver and formatters generates to Utf8Json.Formatters.***. And application launch, you need to set Resolver at first.
+Set the resolver once at startup. For native AOT (and trimmed apps), compose **only AOT-safe resolvers**: the generated resolver, `BuiltinResolver` and `EnumResolver`.
 
 ```csharp
-// CompositeResolver is singleton helper for use custom resolver.
-// Ofcourse you can also make custom resolver.
 Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
-    // use generated resolver first, and combine many other generated/custom resolvers
-    Utf8Json.Resolvers.GeneratedResolver.Instance,
-
-    // set StandardResolver or your use resolver chain
-    Utf8Json.Resolvers.StandardResolver.Default,
-);
+    Utf8Json.Resolvers.GeneratedResolver.Instance,   // your generated formatters
+    Utf8Json.Resolvers.BuiltinResolver.Instance,     // primitives, string, arrays, DateTime, Guid, ...
+    Utf8Json.Resolvers.EnumResolver.Default);        // enums by name (EnumResolver.UnderlyingValue for numbers)
 ```
+
+Or keep it local instead of global:
+
+```csharp
+var resolver = Utf8Json.Resolvers.CompositeResolver.Create(
+    new IJsonFormatter[0],
+    new IJsonFormatterResolver[] { GeneratedResolver.Instance, BuiltinResolver.Instance, EnumResolver.Default });
+
+var json = JsonSerializer.ToJsonString(value, resolver);
+```
+
+### Native AOT notes
+
+- **Do not put `StandardResolver` in the chain for native AOT.** It generates formatters at run time. Under native AOT it no longer crashes; it declines, and a type with no formatter throws `FormatterNotRegisteredException` explaining how to fix it. But it cannot serialize your types there.
+- **Expect warnings for the dynamic APIs.** On net8.0+, the dynamic APIs carry `[RequiresDynamicCode]` / `[RequiresUnreferencedCode]`: `StandardResolver`, `DynamicObjectResolver`, `DynamicGenericResolver`, `AttributeFormatterResolver` and `JsonSerializer.NonGeneric`. A `PublishAot` or trimmed project gets IL3050/IL2026 warnings where it uses them; with the setup above it gets none from Utf8Json.
+- **`CompositeResolver.Create` works under native AOT.** It falls back to a non-emit implementation.
+- **The `JsonSerializer` default.** The resolver-less overloads fall back to `StandardResolver` when no default resolver was set, so call `RegisterAndSetAsDefault` / `SetDefaultResolver` (or pass a resolver) in AOT and trimmed apps.
+- **A working example:** [`tests/Utf8Json.AotSmokeTest`](tests/Utf8Json.AotSmokeTest). CI publishes it with `PublishAot=true`, treating warnings as errors, and runs the native executable.
+
+### Unity IL2CPP
+
+The same applies: generate the formatters and register `GeneratedResolver` first. In the Unity source build, `StandardResolver` additionally includes `UnityResolver` (`Vector2`, `Vector3`, `Quaternion`, `Color`, ...).
 
 How to Build
 ---
