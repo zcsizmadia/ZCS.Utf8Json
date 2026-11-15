@@ -516,6 +516,7 @@ namespace Utf8Json.Formatters
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Deserializing a System.Type by name is an explicit opt-in (typeof(Type) members); it can only resolve types the application keeps, and returns null or throws per throwOnError otherwise.")]
         public Type Deserialize(ref JsonReader reader, IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull()) return null;
@@ -603,7 +604,7 @@ namespace Utf8Json.Formatters
         }
     }
 
-    public sealed class LazyFormatter<T> : IJsonFormatter<Lazy<T>>
+    public sealed class LazyFormatter<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T> : IJsonFormatter<Lazy<T>>
     {
         public void Serialize(ref JsonWriter writer, Lazy<T> value, IJsonFormatterResolver formatterResolver)
         {

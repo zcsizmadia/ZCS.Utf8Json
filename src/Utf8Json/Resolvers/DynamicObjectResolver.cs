@@ -16,6 +16,8 @@ namespace Utf8Json.Resolvers
     /// <summary>
     /// ObjectResolver by dynamic code generation.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     public static class DynamicObjectResolver
     {
         /// <summary>AllowPrivate:False, ExcludeNull:False, NameMutate:Original</summary>
@@ -66,6 +68,8 @@ namespace Utf8Json.Resolvers.Internal
 
     #region DynamicAssembly
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateFalseExcludeNullFalseNameMutateOriginal : IJsonFormatterResolver
 #if DEBUG && (NET45 || NET47)
             , ISave
@@ -101,6 +105,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -112,6 +118,8 @@ namespace Utf8Json.Resolvers.Internal
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateFalseExcludeNullFalseNameMutateCamelCase : IJsonFormatterResolver
 #if DEBUG && (NET45 || NET47)
             , ISave
@@ -147,6 +155,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -158,6 +168,8 @@ namespace Utf8Json.Resolvers.Internal
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateFalseExcludeNullFalseNameMutateSnakeCase : IJsonFormatterResolver
 #if DEBUG && (NET45 || NET47)
             , ISave
@@ -193,6 +205,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -204,6 +218,8 @@ namespace Utf8Json.Resolvers.Internal
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateFalseExcludeNullTrueNameMutateOriginal : IJsonFormatterResolver
 #if DEBUG && (NET45 || NET47)
             , ISave
@@ -239,6 +255,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -250,6 +268,8 @@ namespace Utf8Json.Resolvers.Internal
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateFalseExcludeNullTrueExcludeDefaultTrueNameMutateOriginal : IJsonFormatterResolver
 #if DEBUG && (NET45 || NET47)
             , ISave
@@ -285,6 +305,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -296,6 +318,8 @@ namespace Utf8Json.Resolvers.Internal
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateFalseExcludeNullTrueNameMutateCamelCase : IJsonFormatterResolver
 #if DEBUG && (NET45 || NET47)
             , ISave
@@ -331,6 +355,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -342,6 +368,8 @@ namespace Utf8Json.Resolvers.Internal
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateFalseExcludeNullTrueNameMutateSnakeCase : IJsonFormatterResolver
 #if DEBUG && (NET45 || NET47)
             , ISave
@@ -377,6 +405,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -392,6 +422,8 @@ namespace Utf8Json.Resolvers.Internal
 
     #region DynamicMethod
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateTrueExcludeNullFalseNameMutateOriginal : IJsonFormatterResolver
     {
         // configuration
@@ -405,6 +437,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -416,6 +450,8 @@ namespace Utf8Json.Resolvers.Internal
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateTrueExcludeNullFalseNameMutateCamelCase : IJsonFormatterResolver
     {
         // configuration
@@ -429,6 +465,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -440,6 +478,8 @@ namespace Utf8Json.Resolvers.Internal
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateTrueExcludeNullFalseNameMutateSnakeCase : IJsonFormatterResolver
     {
         // configuration
@@ -453,6 +493,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -464,6 +506,8 @@ namespace Utf8Json.Resolvers.Internal
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateTrueExcludeNullTrueNameMutateOriginal : IJsonFormatterResolver
     {
         // configuration
@@ -477,6 +521,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -488,6 +534,8 @@ namespace Utf8Json.Resolvers.Internal
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateTrueExcludeNullTrueExcludeDefaultTrueNameMutateOriginal : IJsonFormatterResolver
     {
         // configuration
@@ -501,6 +549,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -512,6 +562,8 @@ namespace Utf8Json.Resolvers.Internal
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateTrueExcludeNullTrueNameMutateCamelCase : IJsonFormatterResolver
     {
         // configuration
@@ -525,6 +577,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -536,6 +590,8 @@ namespace Utf8Json.Resolvers.Internal
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal sealed class DynamicObjectResolverAllowPrivateTrueExcludeNullTrueNameMutateSnakeCase : IJsonFormatterResolver
     {
         // configuration
@@ -549,6 +605,8 @@ namespace Utf8Json.Resolvers.Internal
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;
@@ -562,6 +620,8 @@ namespace Utf8Json.Resolvers.Internal
 
     #endregion
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal static class DynamicObjectTypeBuilder
     {
 #if NETSTANDARD
@@ -1628,6 +1688,8 @@ namespace Utf8Json.Resolvers.Internal
             public LocalBuilder IsDeserializedField;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         internal static class EmitInfo
         {
             public static readonly ConstructorInfo ObjectCtor = typeof(object).GetTypeInfo().DeclaredConstructors.First(x => x.GetParameters().Length == 0);
@@ -1677,6 +1739,8 @@ namespace Utf8Json.Resolvers.Internal
                 return typeof(Nullable<>).MakeGenericType(type).GetRuntimeProperty("HasValue").GetGetMethod();
             }
 
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
             internal static class JsonWriter
             {
                 public static readonly MethodInfo GetEncodedPropertyNameWithBeginObject = ExpressionUtility.GetMethodInfo(() => Utf8Json.JsonWriter.GetEncodedPropertyNameWithBeginObject(default(string)));
@@ -1698,6 +1762,8 @@ namespace Utf8Json.Resolvers.Internal
                 }
             }
 
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
             internal static class JsonReader
             {
                 public static readonly MethodInfo ReadIsNull = ExpressionUtility.GetMethodInfo((Utf8Json.JsonReader reader) => reader.ReadIsNull());
@@ -1713,6 +1779,8 @@ namespace Utf8Json.Resolvers.Internal
                 }
             }
 
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
             internal static class JsonFormatterAttr
             {
                 internal static readonly MethodInfo FormatterType = ExpressionUtility.GetPropertyInfo((Utf8Json.JsonFormatterAttribute attr) => attr.FormatterType).GetGetMethod();
@@ -1720,6 +1788,8 @@ namespace Utf8Json.Resolvers.Internal
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         internal class Utf8JsonDynamicObjectResolverException : Exception
         {
             public Utf8JsonDynamicObjectResolverException(string message)
@@ -1733,6 +1803,8 @@ namespace Utf8Json.Resolvers.Internal
     internal delegate void AnonymousJsonSerializeAction<T>(byte[][] stringByteKeysField, object[] customFormatters, ref JsonWriter writer, T value, IJsonFormatterResolver resolver);
     internal delegate T AnonymousJsonDeserializeFunc<T>(object[] customFormatters, ref JsonReader reader, IJsonFormatterResolver resolver);
 
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     internal class DynamicMethodAnonymousFormatter<T> : IJsonFormatter<T>
     {
         readonly byte[][] stringByteKeysField;

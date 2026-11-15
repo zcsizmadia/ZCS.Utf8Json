@@ -10,6 +10,8 @@ namespace Utf8Json.Resolvers
     /// <summary>
     /// Get formatter from [JsonFormatter] attribute.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
     public sealed class AttributeFormatterResolver : IJsonFormatterResolver
     {
         public static IJsonFormatterResolver Instance = new AttributeFormatterResolver();
@@ -24,6 +26,8 @@ namespace Utf8Json.Resolvers
             return FormatterCache<T>.formatter;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
         static class FormatterCache<T>
         {
             public static readonly IJsonFormatter<T> formatter;

@@ -10,6 +10,7 @@ namespace Utf8Json.Formatters
 {
     public static class EnumFormatterHelper
     {
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "The DynamicMethod branch only runs when DynamicCodeSupport.IsSupported; otherwise boxed delegates are used.")]
         public static object GetSerializeDelegate(Type type, out bool isBoxed)
         {
             var underlyingType = Enum.GetUnderlyingType(type);
@@ -71,6 +72,7 @@ namespace Utf8Json.Formatters
 
         }
 
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "The DynamicMethod branch only runs when DynamicCodeSupport.IsSupported; otherwise boxed delegates are used.")]
         public static object GetDeserializeDelegate(Type type, out bool isBoxed)
         {
             var underlyingType = Enum.GetUnderlyingType(type);
@@ -144,6 +146,7 @@ namespace Utf8Json.Formatters
         readonly static JsonSerializeAction<T> defaultSerializeByUnderlyingValue;
         readonly static JsonDeserializeFunc<T> defaultDeserializeByUnderlyingValue;
 
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2090", Justification = "T is an enum; the trimmer keeps all fields of an enum type it keeps.")]
         static EnumFormatter()
         {
             var names = new List<String>();

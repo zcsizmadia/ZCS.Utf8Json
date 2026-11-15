@@ -17,8 +17,18 @@ namespace Utf8Json
         /// <summary>
         /// FormatterResolver that used resolver less overloads. If does not set it, used StandardResolver.Default.
         /// </summary>
+        /// <remarks>
+        /// For trimmed or native AOT applications, call <see cref="SetDefaultResolver"/> (or pass a resolver) with a resolver composed of
+        /// generated formatters (Utf8Json.UniversalCodeGenerator), BuiltinResolver and EnumResolver. The StandardResolver fallback generates
+        /// formatters at run time; under native AOT it reports unsupported types with FormatterNotRegisteredException.
+        /// </remarks>
         public static IJsonFormatterResolver DefaultResolver
         {
+            // Deliberately not [RequiresUnreferencedCode]/[RequiresDynamicCode]: every JsonSerializer overload falls back to this getter
+            // (including when a null resolver is passed), so annotating it would flag every call, also in apps that set an AOT-safe
+            // default resolver. The fallback is documented above and fails clearly at run time under native AOT.
+            [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "StandardResolver is the documented fallback when no default resolver was set; trimmed apps should set an explicit resolver.")]
+            [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "StandardResolver declines at run time when dynamic code is not supported (FormatterNotRegisteredException with guidance).")]
             get
             {
                 if (defaultResolver == null)

@@ -97,14 +97,11 @@ namespace Utf8Json.Resolvers
 
                 foreach (var item in formatters)
                 {
-                    foreach (var implInterface in item.GetType().GetTypeInfo().ImplementedInterfaces)
+                    var f = item as IJsonFormatter<T>;
+                    if (f != null)
                     {
-                        var ti = implInterface.GetTypeInfo();
-                        if (ti.IsGenericType && ti.GenericTypeArguments[0] == typeof(T))
-                        {
-                            formatter = (IJsonFormatter<T>)item;
-                            return;
-                        }
+                        formatter = f;
+                        return;
                     }
                 }
 
@@ -123,22 +120,8 @@ namespace Utf8Json.Resolvers
 
     public abstract class DynamicCompositeResolver : IJsonFormatterResolver
     {
-        const string ModuleName = "Utf8Json.Resolvers.DynamicCompositeResolver";
-
-        static readonly DynamicAssembly assembly;
-
-        static DynamicCompositeResolver()
-        {
-            assembly = new DynamicAssembly(ModuleName);
-        }
-
-#if DEBUG && (NET45 || NET47)
-        public static AssemblyBuilder Save()
-        {
-            return assembly.Save();
-        }
-#endif
-
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Emitted.Create only runs when DynamicCodeSupport.IsSupported; otherwise the non-emit CachedCompositeResolver is used.")]
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Emitted.Create reflects only over the types it generates at run time and over DynamicCompositeResolver itself, neither of which the trimmer can remove.")]
         public static IJsonFormatterResolver Create(IJsonFormatter[] formatters, IJsonFormatterResolver[] resolvers)
         {
             if (!Utf8Json.Internal.DynamicCodeSupport.IsSupported)
@@ -148,51 +131,73 @@ namespace Utf8Json.Resolvers
                 return new CachedCompositeResolver(formatters, resolvers);
             }
 
-            var id = Guid.NewGuid().ToString().Replace("-", "");
-            var resolverType = assembly.DefineType("DynamicCompositeResolver_" + id, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, typeof(DynamicCompositeResolver));
-            var cacheType = assembly.DefineType("DynamicCompositeResolverCache_" + id, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, null);
-            var genericP = cacheType.DefineGenericParameters("T")[0];
+            return Emitted.Create(formatters, resolvers);
+        }
 
-            var resolverInstanceField = resolverType.DefineField("instance", resolverType, FieldAttributes.Public | FieldAttributes.Static);
+        // Reflection.Emit implementation: a generated subclass with a static generic cache per type.
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(Utf8Json.Internal.DynamicCodeSupport.RequiresDynamicCodeMessage)]
+        static class Emitted
+        {
+            const string ModuleName = "Utf8Json.Resolvers.DynamicCompositeResolver";
 
-            var f = cacheType.DefineField("formatter", typeof(IJsonFormatter<>).MakeGenericType(genericP), FieldAttributes.Static | FieldAttributes.Public);
+            static readonly DynamicAssembly assembly = new DynamicAssembly(ModuleName);
+
+#if DEBUG && (NET45 || NET47)
+            public static AssemblyBuilder Save()
             {
-                var cctor = cacheType.DefineConstructor(MethodAttributes.Static, CallingConventions.Standard, Type.EmptyTypes);
-                var il = cctor.GetILGenerator();
-                il.EmitLdsfld(resolverInstanceField);
-                il.EmitCall(typeof(DynamicCompositeResolver).GetMethod("GetFormatterLoop").MakeGenericMethod(genericP));
-                il.Emit(OpCodes.Stsfld, f);
-                il.Emit(OpCodes.Ret);
+                return assembly.Save();
             }
-            var cacheTypeT = cacheType.CreateTypeInfo().AsType();
+#endif
 
+            public static IJsonFormatterResolver Create(IJsonFormatter[] formatters, IJsonFormatterResolver[] resolvers)
             {
-                var ctor = resolverType.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, new[] { typeof(IJsonFormatter[]), typeof(IJsonFormatterResolver[]) });
-                var il = ctor.GetILGenerator();
-                il.EmitLdarg(0);
-                il.EmitLdarg(1);
-                il.EmitLdarg(2);
-                il.Emit(OpCodes.Call, typeof(DynamicCompositeResolver).GetConstructors()[0]);
-                il.Emit(OpCodes.Ret);
+                var id = Guid.NewGuid().ToString().Replace("-", "");
+                var resolverType = assembly.DefineType("DynamicCompositeResolver_" + id, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, typeof(DynamicCompositeResolver));
+                var cacheType = assembly.DefineType("DynamicCompositeResolverCache_" + id, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, null);
+                var genericP = cacheType.DefineGenericParameters("T")[0];
+
+                var resolverInstanceField = resolverType.DefineField("instance", resolverType, FieldAttributes.Public | FieldAttributes.Static);
+
+                var f = cacheType.DefineField("formatter", typeof(IJsonFormatter<>).MakeGenericType(genericP), FieldAttributes.Static | FieldAttributes.Public);
+                {
+                    var cctor = cacheType.DefineConstructor(MethodAttributes.Static, CallingConventions.Standard, Type.EmptyTypes);
+                    var il = cctor.GetILGenerator();
+                    il.EmitLdsfld(resolverInstanceField);
+                    il.EmitCall(typeof(DynamicCompositeResolver).GetMethod("GetFormatterLoop").MakeGenericMethod(genericP));
+                    il.Emit(OpCodes.Stsfld, f);
+                    il.Emit(OpCodes.Ret);
+                }
+                var cacheTypeT = cacheType.CreateTypeInfo().AsType();
+
+                {
+                    var ctor = resolverType.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, new[] { typeof(IJsonFormatter[]), typeof(IJsonFormatterResolver[]) });
+                    var il = ctor.GetILGenerator();
+                    il.EmitLdarg(0);
+                    il.EmitLdarg(1);
+                    il.EmitLdarg(2);
+                    il.Emit(OpCodes.Call, typeof(DynamicCompositeResolver).GetConstructors()[0]);
+                    il.Emit(OpCodes.Ret);
+                }
+                {
+                    var m = resolverType.DefineMethod("GetFormatter", MethodAttributes.Public | MethodAttributes.Virtual);
+
+                    var gpp = m.DefineGenericParameters("T")[0];
+                    m.SetReturnType(typeof(IJsonFormatter<>).MakeGenericType(gpp));
+
+                    var il = m.GetILGenerator();
+                    var formatterField = TypeBuilder.GetField(cacheTypeT.MakeGenericType(gpp), cacheTypeT.GetField("formatter", BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField));
+                    il.EmitLdsfld(formatterField);
+                    il.Emit(OpCodes.Ret);
+                }
+
+                var resolverT = resolverType.CreateTypeInfo().AsType();
+                var instance = Activator.CreateInstance(resolverT, new object[] { formatters, resolvers });
+                var finfo = instance.GetType().GetField("instance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+                finfo.SetValue(null, instance);
+
+                return (IJsonFormatterResolver)instance;
             }
-            {
-                var m = resolverType.DefineMethod("GetFormatter", MethodAttributes.Public | MethodAttributes.Virtual);
-
-                var gpp = m.DefineGenericParameters("T")[0];
-                m.SetReturnType(typeof(IJsonFormatter<>).MakeGenericType(gpp));
-
-                var il = m.GetILGenerator();
-                var formatterField = TypeBuilder.GetField(cacheTypeT.MakeGenericType(gpp), cacheTypeT.GetField("formatter", BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField));
-                il.EmitLdsfld(formatterField);
-                il.Emit(OpCodes.Ret);
-            }
-
-            var resolverT = resolverType.CreateTypeInfo().AsType();
-            var instance = Activator.CreateInstance(resolverT, new object[] { formatters, resolvers });
-            var finfo = instance.GetType().GetField("instance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-            finfo.SetValue(null, instance);
-
-            return (IJsonFormatterResolver)instance;
         }
 
         public readonly IJsonFormatter[] formatters;
@@ -208,13 +213,10 @@ namespace Utf8Json.Resolvers
         {
             foreach (var item in formatters)
             {
-                foreach (var implInterface in item.GetType().GetTypeInfo().ImplementedInterfaces)
+                var f = item as IJsonFormatter<T>;
+                if (f != null)
                 {
-                    var ti = implInterface.GetTypeInfo();
-                    if (ti.IsGenericType && ti.GenericTypeArguments[0] == typeof(T))
-                    {
-                        return (IJsonFormatter<T>)(object)item;
-                    }
+                    return f;
                 }
             }
 

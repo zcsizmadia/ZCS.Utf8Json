@@ -26,11 +26,13 @@ namespace Utf8Json.Internal
                 && (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
         public static IEnumerable<PropertyInfo> GetAllProperties(this Type type)
         {
             return GetAllPropertiesCore(type, new HashSet<string>());
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
         static IEnumerable<PropertyInfo> GetAllPropertiesCore(Type type, HashSet<string> nameCheck)
         {
             foreach (var item in type.GetRuntimeProperties())
@@ -49,11 +51,13 @@ namespace Utf8Json.Internal
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
         public static IEnumerable<FieldInfo> GetAllFields(this Type type)
         {
             return GetAllFieldsCore(type, new HashSet<string>());
         }
 
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(Utf8Json.Internal.DynamicCodeSupport.RequiresUnreferencedCodeMessage)]
         static IEnumerable<FieldInfo> GetAllFieldsCore(Type type, HashSet<string> nameCheck)
         {
             foreach (var item in type.GetRuntimeFields())
