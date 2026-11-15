@@ -141,6 +141,12 @@ namespace Utf8Json.Resolvers
 
         public static IJsonFormatterResolver Create(IJsonFormatter[] formatters, IJsonFormatterResolver[] resolvers)
         {
+            if (!Utf8Json.Internal.DynamicCodeSupport.IsSupported)
+            {
+                throw Utf8Json.Internal.DynamicCodeSupport.CreateNotSupportedException(
+                    "CompositeResolver.Create (DynamicCompositeResolver)");
+            }
+
             var id = Guid.NewGuid().ToString().Replace("-", "");
             var resolverType = assembly.DefineType("DynamicCompositeResolver_" + id, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, typeof(DynamicCompositeResolver));
             var cacheType = assembly.DefineType("DynamicCompositeResolverCache_" + id, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, null);

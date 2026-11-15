@@ -30,7 +30,12 @@ namespace Utf8Json
 
             if (formatter == null)
             {
-                throw new FormatterNotRegisteredException(typeof(T).FullName + " is not registered in this resolver. resolver:" + resolver.GetType().Name);
+                var message = typeof(T).FullName + " is not registered in this resolver. resolver:" + resolver.GetType().Name;
+                if (!Utf8Json.Internal.DynamicCodeSupport.IsSupported)
+                {
+                    message += ". " + Utf8Json.Internal.DynamicCodeSupport.NotSupportedHint;
+                }
+                throw new FormatterNotRegisteredException(message);
             }
 
             return formatter;

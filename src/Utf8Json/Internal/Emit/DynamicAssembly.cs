@@ -6,11 +6,12 @@ namespace Utf8Json.Internal.Emit
 {
     internal class DynamicAssembly
     {
-#if NET45 || NET47
         readonly string moduleName;
-#endif
-        readonly AssemblyBuilder assemblyBuilder;
-        readonly ModuleBuilder moduleBuilder;
+
+        // Created on first use, not in the constructor: resolvers hold a DynamicAssembly in static fields, and
+        // creating the AssemblyBuilder eagerly made merely touching StandardResolver throw under native AOT.
+        AssemblyBuilder assemblyBuilder;
+        ModuleBuilder moduleBuilder;
 
         // don't expose ModuleBuilder
         // public ModuleBuilder ModuleBuilder { get { return moduleBuilder; } }
@@ -23,7 +24,7 @@ namespace Utf8Json.Internal.Emit
         {
             lock (gate)
             {
-                return moduleBuilder.DefineType(name, attr);
+                return GetModuleBuilder().DefineType(name, attr);
             }
         }
 
@@ -31,7 +32,7 @@ namespace Utf8Json.Internal.Emit
         {
             lock (gate)
             {
-                return moduleBuilder.DefineType(name, attr, parent);
+                return GetModuleBuilder().DefineType(name, attr, parent);
             }
         }
 
@@ -39,33 +40,50 @@ namespace Utf8Json.Internal.Emit
         {
             lock (gate)
             {
-                return moduleBuilder.DefineType(name, attr, parent, interfaces);
+                return GetModuleBuilder().DefineType(name, attr, parent, interfaces);
             }
         }
 
         public DynamicAssembly(string moduleName)
         {
-#if NET45 || NET47
             this.moduleName = moduleName;
-            this.assemblyBuilder = System.AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(moduleName), AssemblyBuilderAccess.RunAndSave);
-            this.moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName, moduleName + ".dll");
+        }
+
+        // caller must hold gate
+        ModuleBuilder GetModuleBuilder()
+        {
+            if (moduleBuilder != null) return moduleBuilder;
+
+            if (!DynamicCodeSupport.IsSupported)
+            {
+                throw DynamicCodeSupport.CreateNotSupportedException("Building the dynamic assembly '" + moduleName + "'");
+            }
+
+#if NET45 || NET47
+            assemblyBuilder = System.AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(moduleName), AssemblyBuilderAccess.RunAndSave);
+            moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName, moduleName + ".dll");
 #else
 #if NETSTANDARD
-            this.assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(moduleName), AssemblyBuilderAccess.Run);
+            assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(moduleName), AssemblyBuilderAccess.Run);
 #else
-            this.assemblyBuilder = System.AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(moduleName), AssemblyBuilderAccess.Run);
+            assemblyBuilder = System.AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(moduleName), AssemblyBuilderAccess.Run);
 #endif
 
-            this.moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName);
+            moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName);
 #endif
+            return moduleBuilder;
         }
 
 #if NET45 || NET47
 
         public AssemblyBuilder Save()
         {
-            assemblyBuilder.Save(moduleName + ".dll");
-            return assemblyBuilder;
+            lock (gate)
+            {
+                GetModuleBuilder();
+                assemblyBuilder.Save(moduleName + ".dll");
+                return assemblyBuilder;
+            }
         }
 
 #endif

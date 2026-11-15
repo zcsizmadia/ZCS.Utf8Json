@@ -614,6 +614,9 @@ namespace Utf8Json.Resolvers.Internal
 
         public static object BuildFormatterToAssembly<T>(DynamicAssembly assembly, IJsonFormatterResolver selfResolver, Func<string, string> nameMutator, bool excludeNull, bool excludeDefaultValue)
         {
+            // Under native AOT there is no Reflection.Emit: decline (return null) so a composite resolver can fall through to the next resolver.
+            if (!DynamicCodeSupport.IsSupported) return null;
+
             var ti = typeof(T).GetTypeInfo();
 
             if (ti.IsNullable())
@@ -646,6 +649,9 @@ namespace Utf8Json.Resolvers.Internal
 
         public static object BuildFormatterToDynamicMethod<T>(IJsonFormatterResolver selfResolver, Func<string, string> nameMutator, bool excludeNull, bool excludeDefaultValue, bool allowPrivate)
         {
+            // Under native AOT there is no Reflection.Emit: decline (return null) so a composite resolver can fall through to the next resolver.
+            if (!DynamicCodeSupport.IsSupported) return null;
+
             var ti = typeof(T).GetTypeInfo();
 
             if (ti.IsNullable())
