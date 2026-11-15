@@ -15,16 +15,20 @@ namespace Utf8Json.Formatters
             var underlyingType = Enum.GetUnderlyingType(type);
 
 #if NETSTANDARD
-            isBoxed = false;
-            var dynamicMethod = new DynamicMethod("EnumSerializeByUnderlyingValue", null, new[] { typeof(JsonWriter).MakeByRefType(), type, typeof(IJsonFormatterResolver) }, type.Module, true);
-            var il = dynamicMethod.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0); // writer
-            il.Emit(OpCodes.Ldarg_1); // value
-            il.Emit(OpCodes.Call, typeof(JsonWriter).GetRuntimeMethod("Write" + underlyingType.Name, new[] { underlyingType }));
-            il.Emit(OpCodes.Ret);
-            return dynamicMethod.CreateDelegate(typeof(JsonSerializeAction<>).MakeGenericType(type));
-#else
-            // Boxed
+            if (DynamicCodeSupport.IsSupported)
+            {
+                isBoxed = false;
+                var dynamicMethod = new DynamicMethod("EnumSerializeByUnderlyingValue", null, new[] { typeof(JsonWriter).MakeByRefType(), type, typeof(IJsonFormatterResolver) }, type.Module, true);
+                var il = dynamicMethod.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0); // writer
+                il.Emit(OpCodes.Ldarg_1); // value
+                il.Emit(OpCodes.Call, typeof(JsonWriter).GetRuntimeMethod("Write" + underlyingType.Name, new[] { underlyingType }));
+                il.Emit(OpCodes.Ret);
+                return dynamicMethod.CreateDelegate(typeof(JsonSerializeAction<>).MakeGenericType(type));
+            }
+#endif
+
+            // Boxed fallback: Unity source build and runtimes without dynamic code (native AOT).
             isBoxed = true;
             JsonSerializeAction<object> f;
             if (underlyingType == typeof(byte))
@@ -64,7 +68,7 @@ namespace Utf8Json.Formatters
                 throw new InvalidOperationException("Type is not Enum. Type:" + type);
             }
             return f;
-#endif
+
         }
 
         public static object GetDeserializeDelegate(Type type, out bool isBoxed)
@@ -72,15 +76,19 @@ namespace Utf8Json.Formatters
             var underlyingType = Enum.GetUnderlyingType(type);
 
 #if NETSTANDARD
-            isBoxed = false;
-            var dynamicMethod = new DynamicMethod("EnumDeserializeByUnderlyingValue", type, new[] { typeof(JsonReader).MakeByRefType(), typeof(IJsonFormatterResolver) }, type.Module, true);
-            var il = dynamicMethod.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0); // reader
-            il.Emit(OpCodes.Call, typeof(JsonReader).GetRuntimeMethod("Read" + underlyingType.Name, Type.EmptyTypes));
-            il.Emit(OpCodes.Ret);
-            return dynamicMethod.CreateDelegate(typeof(JsonDeserializeFunc<>).MakeGenericType(type));
-#else
-            // Boxed
+            if (DynamicCodeSupport.IsSupported)
+            {
+                isBoxed = false;
+                var dynamicMethod = new DynamicMethod("EnumDeserializeByUnderlyingValue", type, new[] { typeof(JsonReader).MakeByRefType(), typeof(IJsonFormatterResolver) }, type.Module, true);
+                var il = dynamicMethod.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0); // reader
+                il.Emit(OpCodes.Call, typeof(JsonReader).GetRuntimeMethod("Read" + underlyingType.Name, Type.EmptyTypes));
+                il.Emit(OpCodes.Ret);
+                return dynamicMethod.CreateDelegate(typeof(JsonDeserializeFunc<>).MakeGenericType(type));
+            }
+#endif
+
+            // Boxed fallback: Unity source build and runtimes without dynamic code (native AOT).
             isBoxed = true;
             JsonDeserializeFunc<object> f;
             if (underlyingType == typeof(byte))
@@ -120,7 +128,7 @@ namespace Utf8Json.Formatters
                 throw new InvalidOperationException("Type is not Enum. Type:" + type);
             }
             return f;
-#endif
+
         }
     }
 }
