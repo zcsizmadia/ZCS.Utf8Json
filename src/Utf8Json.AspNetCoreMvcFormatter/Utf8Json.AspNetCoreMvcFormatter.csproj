@@ -13,6 +13,10 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" />
+    </ItemGroup>
+
+    <!-- In-box on .NET 8+ (part of the shared framework); only netstandard needs the package. -->
+    <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
         <PackageReference Include="System.Text.Encodings.Web" />
     </ItemGroup>
 
