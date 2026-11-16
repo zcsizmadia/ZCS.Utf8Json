@@ -5,8 +5,7 @@ Utf8Json - Fast JSON Serializer for C#
 
 You can find these packages in NuGet under `ZCS.Utf8Json`
 
-![.NET Core](https://github.com/zcsizmadia/ZCS.Utf8Json/workflows/.NET%20Core/badge.svg) [![Join the chat at https://gitter.im/neuecc/Utf8Json](https://badges.gitter.im/neuecc/Utf8Json.svg)](https://gitter.im/neuecc/Utf8Json?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
- [![Releases](https://img.shields.io/github/release/neuecc/Utf8Json.svg)](https://github.com/neuecc/Utf8Json/releases)
+[![.NET](https://github.com/zcsizmadia/ZCS.Utf8Json/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/zcsizmadia/ZCS.Utf8Json/actions/workflows/dotnet.yml) [![NuGet](https://img.shields.io/nuget/v/ZCS.Utf8Json.svg)](https://www.nuget.org/packages/ZCS.Utf8Json) [![NuGet downloads](https://img.shields.io/nuget/dt/ZCS.Utf8Json.svg)](https://www.nuget.org/packages/ZCS.Utf8Json) [![Releases](https://img.shields.io/github/v/release/zcsizmadia/ZCS.Utf8Json.svg)](https://github.com/zcsizmadia/ZCS.Utf8Json/releases)
 
 Definitely Fastest and Zero Allocation JSON Serializer for C#(.NET, .NET Core, Unity and Xamarin), this serializer write/read directly to UTF8 binary so boostup performance. And I adopt the same architecture as the fastest binary serializer, [MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp) that I've developed.
 
@@ -82,21 +81,21 @@ Corefxlab has [UTF8String](https://github.com/dotnet/corefxlab/issues/1751) and 
 
 Install and QuickStart
 ---
-The library provides in NuGet except for Unity. Standard library availables for .NET Framework 4.5 and .NET Standard 2.0.
+The library is available on NuGet as `ZCS.Utf8Json` (except for Unity, which uses the source). It targets .NET Standard 2.0/2.1, .NET 8, .NET 10 and .NET 11.
 
 ```
-Install-Package Utf8Json
+dotnet add package ZCS.Utf8Json
 ```
 
 And official Extension Packages for support other library(ImmutableCollection) or binding for framework(ASP.NET Core MVC).
 
 ```
-Install-Package Utf8Json.ImmutableCollection
-Install-Package Utf8Json.UnityShims
-Install-Package Utf8Json.AspNetCoreMvcFormatter
+dotnet add package ZCS.Utf8Json.ImmutableCollection
+dotnet add package ZCS.Utf8Json.UnityShims
+dotnet add package ZCS.Utf8Json.AspNetCoreMvcFormatter
 ```
 
-NuGet page links - [Utf8Json](https://www.nuget.org/packages/Utf8Json), [Utf8Json.ImmutableCollection](https://www.nuget.org/packages/Utf8Json.ImmutableCollection), [Utf8Json.UnityShims](https://www.nuget.org/packages/Utf8Json.UnityShims), [Utf8Json.AspNetCoreMvcFormatter](https://www.nuget.org/packages/Utf8Json.AspNetCoreMvcFormatter)
+NuGet page links - [ZCS.Utf8Json](https://www.nuget.org/packages/ZCS.Utf8Json), [ZCS.Utf8Json.ImmutableCollection](https://www.nuget.org/packages/ZCS.Utf8Json.ImmutableCollection), [ZCS.Utf8Json.UnityShims](https://www.nuget.org/packages/ZCS.Utf8Json.UnityShims), [ZCS.Utf8Json.AspNetCoreMvcFormatter](https://www.nuget.org/packages/ZCS.Utf8Json.AspNetCoreMvcFormatter)
 
 for Unity, you can download from [releases](https://github.com/neuecc/Utf8Json/releases) page. There providing .unitypackage. Unity support details, see [Unity section](https://github.com/neuecc/Utf8Json#for-unity).
 
@@ -845,7 +844,7 @@ public class Utf8JsonLambdaSerializer : Amazon.Lambda.Core.ILambdaSerializer
 }
 ```
 
-Utf8Json provides for ASP.NET Core MVC formatter. [Utf8Json.AspNetCoreMvcFormatter](https://www.nuget.org/packages/Utf8Json.AspNetCoreMvcFormatter). This is sample of use it.
+Utf8Json provides for ASP.NET Core MVC formatter. [ZCS.Utf8Json.AspNetCoreMvcFormatter](https://www.nuget.org/packages/ZCS.Utf8Json.AspNetCoreMvcFormatter). This is sample of use it.
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
